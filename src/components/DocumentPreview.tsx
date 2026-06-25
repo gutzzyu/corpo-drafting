@@ -381,20 +381,12 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                   </div>
                 </div>
 
-                <div className="my-auto py-8 flex flex-col items-center w-full">
+                <div className="mt-auto mb-32 py-8 flex flex-col items-center w-full">
                   {/* Dynamic Client display exactly matching target PDF style */}
                   <div className="w-auto border-b border-black pb-2 px-12">
                     <h1 className="text-[26px] font-bold text-black uppercase tracking-wider text-center">
                       {proposalDetails?.clientName || "[CLIENT NAME]"}
                     </h1>
-                  </div>
-                </div>
-
-                {/* Cover Page Footer */}
-                <div className="select-none -mx-[0.6in]">
-                  <div className="w-full border-t-[3px] border-black mb-2"></div>
-                  <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
-                    www.stlaf.global
                   </div>
                 </div>
               </div>
@@ -659,6 +651,19 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         )}
                       </div>
                     </div>
+                    
+                    {/* PARAGRAPHS MOVED FROM PAGE 4 */}
+                    <div className="pt-4 space-y-3">
+                      {/* SSS Note Block matches PDF */}
+                      <p className="text-black text-[11pt] leading-relaxed">
+                        Should you choose our law firm to register your business with the Social Security System (SSS), the Philippine Health Insurance Corporation (PhilHealth), and the Home Mutual Development Fund (HMDF/Pag-IBIG), the scope of this service includes the registration and acquisition of a corporate ID number for SSS, PhilHealth and Pag-IBIG. For the foregoing service, our professional fees shall be fixed at <span className="font-semibold text-black">Php {((proposalDetails?.govRegFee !== undefined ? proposalDetails.govRegFee : 10000)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> per Government Agency required.
+                      </p>
+
+                      <p className="text-black text-[11pt] leading-relaxed">
+                        We shall send you our billings every fifth (5th) day of each month and expect payment from you no later than the tenth (10th) day of the same month, or five (5) days from the date of billing.
+                      </p>
+                    </div>
+
                   </div>
                 </div>
 
@@ -695,15 +700,6 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                   </div>
 
                   <div className="space-y-3 text-[11pt]">
-                    {/* SSS Note Block matches PDF */}
-                    <p className="text-black text-[11pt] leading-relaxed">
-                      Should you choose our law firm to register your business with the Social Security System (SSS), the Philippine Health Insurance Corporation (PhilHealth), and the Home Mutual Development Fund (HMDF/Pag-IBIG), the scope of this service includes the registration and acquisition of a corporate ID number for SSS, PhilHealth and Pag-IBIG. For the foregoing service, our professional fees shall be fixed at <span className="font-semibold text-black">Php {((proposalDetails?.govRegFee !== undefined ? proposalDetails.govRegFee : 10000)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> per Government Agency required.
-                    </p>
-
-                    <p className="text-black text-[11pt] leading-relaxed">
-                      We shall send you our billings every fifth (5th) day of each month and expect payment from you no later than the tenth (10th) day of the same month, or five (5) days from the date of billing.
-                    </p>
-
                     <p className="text-black leading-relaxed text-justify">
                       If your account is not paid within the 5-day limit, following our firm policy, the firm’s management will insist that no further work be done on your file until the account is paid and your retainer is brought up to date.
                     </p>
@@ -722,7 +718,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
 
                     {/* SINCERELY YOURS AND ATTY CHRIS */}
                     <div className="pt-2 select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
-                      <div className="text-black mb-8">Sincerely yours,</div>
+                      <div className="text-black mb-16">Sincerely yours,</div>
                       
                       <div className="mb-4">
                         <div className="font-bold uppercase text-black leading-tight">
@@ -794,7 +790,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       </div>
 
                       {/* Client Signature and Date Signed centered horizontally after the acceptance content */}
-                      <div className="flex flex-col items-center justify-center mt-6 space-y-8 text-center select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
+                      <div className="flex flex-col items-center justify-center mt-16 space-y-16 text-center select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
                         <div className="flex flex-col items-center">
                           <span className="text-black select-none leading-none mb-1">
                             .........................................................................

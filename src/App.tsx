@@ -1950,7 +1950,7 @@ export default function App() {
                           <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Unit / Building / House No.</span>
                           <Input 
                             className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
-                            placeholder="e.g. 2162-2188 Unit C." 
+                            placeholder="e.g. Unit 123, ABC Building" 
                             value={proposalDetails.clientStreet || ""}
                             onChange={e => {
                               const s1 = e.target.value;
@@ -1973,7 +1973,7 @@ export default function App() {
                           <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Street / Road</span>
                           <Input 
                             className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
-                            placeholder="e.g. F.B. Harrison St." 
+                            placeholder="e.g. Ayala Avenue" 
                             value={proposalDetails.clientStreet2 || ""}
                             onChange={e => {
                               const s2 = e.target.value;
@@ -1997,7 +1997,7 @@ export default function App() {
                             <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Barangay</span>
                             <Input 
                               className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
-                              placeholder="e.g. Brgy. 25, Zone 4" 
+                              placeholder="e.g. Brgy. San Lorenzo" 
                               value={proposalDetails.clientBarangay || ""}
                               onChange={e => {
                                 const brgy = e.target.value;
@@ -2020,7 +2020,7 @@ export default function App() {
                             <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">City / Municipality</span>
                             <Input 
                               className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
-                              placeholder="e.g. Pasay City" 
+                              placeholder="e.g. Makati City" 
                               value={proposalDetails.clientCity || ""}
                               onChange={e => {
                                 const city = e.target.value;
