@@ -121,7 +121,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
     return cn(
       "bg-white shadow-2xl relative flex flex-col justify-between text-justify select-text",
       paperSize === 'legal' ? 'w-[8.5in] h-[13in] min-h-[13in]' : paperSize === 'a4' ? 'w-[210mm] h-[297mm] min-h-[297mm]' : 'w-[8.5in] h-[11in] min-h-[11in]',
-      "pt-[0.5in] pb-[0.8in] px-[0.8in] mb-8 print:mb-0 print:shadow-none print:w-full print:h-screen print:min-h-0 print:p-0"
+      "pt-[0.5in] pb-[0.8in] px-[0.8in] mb-8 print:mb-0 print:shadow-none print:w-full print:h-screen print:min-h-0"
     );
   };
 
@@ -157,7 +157,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
 
           @page { 
             size: ${paperSize === 'legal' ? '8.5in 13in' : paperSize}; 
-            margin: ${documentType === 'proposal' ? '0.5in 0.8in 0.8in 0.8in' : '1in'}; 
+            margin: 0; 
           }
           
           .page-break { page-break-before: always !important; }
@@ -172,7 +172,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
       <div
         ref={contentRef}
         className={cn(
-          "document-font text-black text-[12pt] print:shadow-none print:p-0 print:m-0 print-content w-full flex flex-col items-center",
+          "document-font text-black text-[12pt] print:shadow-none print:m-0 print-content w-full flex flex-col items-center",
           documentType === 'proposal'
             ? "bg-transparent shadow-none p-0 m-0"
             : cn("bg-white shadow-2xl p-[1in]", paperClasses[paperSize])
