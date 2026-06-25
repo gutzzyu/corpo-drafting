@@ -80,7 +80,15 @@ export default function App() {
   // Proposal State
   const [proposalDetails, setProposalDetails] = useState<ProposalDetails>({
     clientName: '',
+    clientFirstName: '',
+    clientMiddleInitial: '',
+    clientLastName: '',
     clientAddress: '',
+    clientStreet: '',
+    clientStreet2: '',
+    clientBarangay: '',
+    clientCity: '',
+    clientProvince: '',
     proposalDate: new Date().toISOString().split('T')[0],
     isCustomsLinked: false,
     includePhase1: true,
@@ -120,6 +128,9 @@ export default function App() {
   const [details, setDetails] = useState<SPADetails>({
     paperSize: 'legal',
     affiantName: '',
+    affiantFirstName: '',
+    affiantMiddleInitial: '',
+    affiantLastName: '',
     nationality: 'Filipino',
     civilStatus: 'Single',
     address: '',
@@ -142,6 +153,9 @@ export default function App() {
   // SEC Feature State
   const [secSignatoryType, setSecSignatoryType] = useState<string>("");
   const [secManualSignatory, setSecManualSignatory] = useState<string>("");
+  const [secManualFirstName, setSecManualFirstName] = useState<string>("");
+  const [secManualMiddleInitial, setSecManualMiddleInitial] = useState<string>("");
+  const [secManualLastName, setSecManualLastName] = useState<string>("");
   const [secCorpName, setSecCorpName] = useState<string>("");
   const [isManualCorp, setIsManualCorp] = useState(false);
   const [secCorpAddress, setSecCorpAddress] = useState<string>("");
@@ -427,7 +441,15 @@ export default function App() {
     // Reset Proposal Details
     setProposalDetails({
       clientName: '',
+      clientFirstName: '',
+      clientMiddleInitial: '',
+      clientLastName: '',
       clientAddress: '',
+      clientStreet: '',
+      clientStreet2: '',
+      clientBarangay: '',
+      clientCity: '',
+      clientProvince: '',
       proposalDate: new Date().toISOString().split('T')[0],
       isCustomsLinked: false,
       includePhase1: true,
@@ -671,14 +693,73 @@ export default function App() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-2 md:col-span-2">
                           <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Full Name of Principal (Affiant)</Label>
-                          <Input 
-                            className="h-12 border-slate-200"
-                            placeholder="Principal (Affiant) Name" 
-                            value={details.affiantName}
-                            onChange={e => setDetails(prev => ({ ...prev, affiantName: e.target.value }))}
-                          />
+                          <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr] gap-3">
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">First Name</span>
+                              <Input 
+                                className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                                placeholder="First Name" 
+                                value={details.affiantFirstName || ""}
+                                onChange={e => {
+                                  const fn = e.target.value;
+                                  setDetails(prev => {
+                                    const mi = prev.affiantMiddleInitial || "";
+                                    const ln = prev.affiantLastName || "";
+                                    const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                    return {
+                                      ...prev,
+                                      affiantFirstName: fn,
+                                      affiantName: fullName
+                                    };
+                                  });
+                                }}
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">M.I.</span>
+                              <Input 
+                                className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                                placeholder="M.I." 
+                                value={details.affiantMiddleInitial || ""}
+                                onChange={e => {
+                                  const mi = e.target.value;
+                                  setDetails(prev => {
+                                    const fn = prev.affiantFirstName || "";
+                                    const ln = prev.affiantLastName || "";
+                                    const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                    return {
+                                      ...prev,
+                                      affiantMiddleInitial: mi,
+                                      affiantName: fullName
+                                    };
+                                  });
+                                }}
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Last Name</span>
+                              <Input 
+                                className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                                placeholder="Last Name" 
+                                value={details.affiantLastName || ""}
+                                onChange={e => {
+                                  const ln = e.target.value;
+                                  setDetails(prev => {
+                                    const fn = prev.affiantFirstName || "";
+                                    const mi = prev.affiantMiddleInitial || "";
+                                    const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                    return {
+                                      ...prev,
+                                      affiantLastName: ln,
+                                      affiantName: fullName
+                                    };
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
                         </div>
                         <div className="space-y-2">
                           <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Nationality</Label>
@@ -1024,14 +1105,58 @@ export default function App() {
                     </div>
 
                     {secSignatoryType === 'Others (Manual Input)' ? (
-                      <div className="space-y-2">
+                      <div className="space-y-2 md:col-span-2">
                         <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Enter Signatory Name</Label>
-                        <Input 
-                          placeholder="Signatory Name" 
-                          className="h-12 border-slate-200"
-                          value={secManualSignatory}
-                          onChange={(e) => setSecManualSignatory(e.target.value)}
-                        />
+                        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr] gap-3">
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">First Name</span>
+                            <Input 
+                              className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                              placeholder="First Name" 
+                              value={secManualFirstName}
+                              onChange={e => {
+                                const fn = e.target.value;
+                                setSecManualFirstName(fn);
+                                const mi = secManualMiddleInitial;
+                                const ln = secManualLastName;
+                                const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                setSecManualSignatory(fullName);
+                              }}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">M.I.</span>
+                            <Input 
+                              className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                              placeholder="M.I." 
+                              value={secManualMiddleInitial}
+                              onChange={e => {
+                                const mi = e.target.value;
+                                setSecManualMiddleInitial(mi);
+                                const fn = secManualFirstName;
+                                const ln = secManualLastName;
+                                const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                setSecManualSignatory(fullName);
+                              }}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Last Name</span>
+                            <Input 
+                              className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                              placeholder="Last Name" 
+                              value={secManualLastName}
+                              onChange={e => {
+                                const ln = e.target.value;
+                                setSecManualLastName(ln);
+                                const fn = secManualFirstName;
+                                const mi = secManualMiddleInitial;
+                                const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                setSecManualSignatory(fullName);
+                              }}
+                            />
+                          </div>
+                        </div>
                       </div>
                     ) : (
                       <div className="hidden md:block"></div>
@@ -1495,14 +1620,58 @@ export default function App() {
                     </div>
 
                     {secSignatoryType === 'Others (Manual Input)' ? (
-                      <div className="space-y-2">
+                      <div className="space-y-2 md:col-span-2">
                         <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Enter Signatory Name</Label>
-                        <Input 
-                          placeholder="Signatory Name" 
-                          className="h-12 border-slate-200"
-                          value={secManualSignatory}
-                          onChange={(e) => setSecManualSignatory(e.target.value)}
-                        />
+                        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr] gap-3">
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">First Name</span>
+                            <Input 
+                              className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                              placeholder="First Name" 
+                              value={secManualFirstName}
+                              onChange={e => {
+                                const fn = e.target.value;
+                                setSecManualFirstName(fn);
+                                const mi = secManualMiddleInitial;
+                                const ln = secManualLastName;
+                                const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                setSecManualSignatory(fullName);
+                              }}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">M.I.</span>
+                            <Input 
+                              className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                              placeholder="M.I." 
+                              value={secManualMiddleInitial}
+                              onChange={e => {
+                                const mi = e.target.value;
+                                setSecManualMiddleInitial(mi);
+                                const fn = secManualFirstName;
+                                const ln = secManualLastName;
+                                const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                setSecManualSignatory(fullName);
+                              }}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Last Name</span>
+                            <Input 
+                              className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                              placeholder="Last Name" 
+                              value={secManualLastName}
+                              onChange={e => {
+                                const ln = e.target.value;
+                                setSecManualLastName(ln);
+                                const fn = secManualFirstName;
+                                const mi = secManualMiddleInitial;
+                                const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                setSecManualSignatory(fullName);
+                              }}
+                            />
+                          </div>
+                        </div>
                       </div>
                     ) : (
                       <div className="hidden md:block"></div>
@@ -1685,46 +1854,215 @@ export default function App() {
                 <CardContent className="p-8 space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-slate-100 font-inter">
                     {/* Client Salutation & Client Name */}
-                    <div className="space-y-2 col-span-1">
-                      <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Salutation / Honorific</Label>
-                      <Select 
-                        value={proposalDetails.salutation || 'Mr.'} 
-                        onValueChange={(v) => setProposalDetails(prev => ({ ...prev, salutation: v }))}
-                      >
-                        <SelectTrigger className="h-12 border-slate-200 bg-white">
-                          <SelectValue placeholder="Mr." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Mr.">Mr.</SelectItem>
-                          <SelectItem value="Ms.">Ms.</SelectItem>
-                          <SelectItem value="Mrs.">Mrs.</SelectItem>
-                          <SelectItem value="Dr.">Dr.</SelectItem>
-                          <SelectItem value="Atty.">Atty.</SelectItem>
-                          <SelectItem value="Engr.">Engr.</SelectItem>
-                          <SelectItem value="Prof.">Prof.</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2 col-span-1">
-                      <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Client Name</Label>
-                      <Input 
-                        placeholder="Client Name" 
-                        className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765] transition-all font-semibold"
-                        value={proposalDetails.clientName}
-                        onChange={(e) => setProposalDetails(prev => ({ ...prev, clientName: e.target.value.toUpperCase() }))}
-                      />
-                    </div>
-
-                    {/* Client Address */}
                     <div className="space-y-2 md:col-span-2">
-                      <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Client Address</Label>
-                      <Textarea 
-                        placeholder="Client Address" 
-                        className="min-h-[80px] border-slate-200 leading-relaxed focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765] transition-all"
-                        value={proposalDetails.clientAddress}
-                        onChange={(e) => setProposalDetails(prev => ({ ...prev, clientAddress: e.target.value }))}
-                      />
+                      <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr_1fr_2fr] gap-3">
+                        <div className="space-y-1">
+                          <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Honorific</Label>
+                          <Select 
+                            value={proposalDetails.salutation || 'Mr.'} 
+                            onValueChange={(v) => setProposalDetails(prev => ({ ...prev, salutation: v }))}
+                          >
+                            <SelectTrigger className="h-12 border-slate-200 bg-white">
+                              <SelectValue placeholder="Mr." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Mr.">Mr.</SelectItem>
+                              <SelectItem value="Ms.">Ms.</SelectItem>
+                              <SelectItem value="Mrs.">Mrs.</SelectItem>
+                              <SelectItem value="Dr.">Dr.</SelectItem>
+                              <SelectItem value="Atty.">Atty.</SelectItem>
+                              <SelectItem value="Engr.">Engr.</SelectItem>
+                              <SelectItem value="Prof.">Prof.</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">First Name</span>
+                          <Input 
+                            className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                            placeholder="First Name" 
+                            value={proposalDetails.clientFirstName || ""}
+                            onChange={e => {
+                              const fn = e.target.value;
+                              setProposalDetails(prev => {
+                                const mi = prev.clientMiddleInitial || "";
+                                const ln = prev.clientLastName || "";
+                                const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                return {
+                                  ...prev,
+                                  clientFirstName: fn,
+                                  clientName: fullName
+                                };
+                              });
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">M.I.</span>
+                          <Input 
+                            className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                            placeholder="M.I." 
+                            value={proposalDetails.clientMiddleInitial || ""}
+                            onChange={e => {
+                              const mi = e.target.value;
+                              setProposalDetails(prev => {
+                                const fn = prev.clientFirstName || "";
+                                const ln = prev.clientLastName || "";
+                                const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                return {
+                                  ...prev,
+                                  clientMiddleInitial: mi,
+                                  clientName: fullName
+                                };
+                              });
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Last Name</span>
+                          <Input 
+                            className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                            placeholder="Last Name" 
+                            value={proposalDetails.clientLastName || ""}
+                            onChange={e => {
+                              const ln = e.target.value;
+                              setProposalDetails(prev => {
+                                const fn = prev.clientFirstName || "";
+                                const mi = prev.clientMiddleInitial || "";
+                                const fullName = `${fn}${mi ? ' ' + mi : ''} ${ln}`.trim().toUpperCase();
+                                return {
+                                  ...prev,
+                                  clientLastName: ln,
+                                  clientName: fullName
+                                };
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Divided Client Address Fields */}
+                    <div className="space-y-4 md:col-span-2 pb-2">
+                      <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Client Address Details</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1 col-span-1">
+                          <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Unit / Building / House No.</span>
+                          <Input 
+                            className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                            placeholder="e.g. 2162-2188 Unit C." 
+                            value={proposalDetails.clientStreet || ""}
+                            onChange={e => {
+                              const s1 = e.target.value;
+                              setProposalDetails(prev => {
+                                const s2 = prev.clientStreet2 || "";
+                                const brgy = prev.clientBarangay || "";
+                                const city = prev.clientCity || "";
+                                const prov = prev.clientProvince || "";
+                                return {
+                                  ...prev,
+                                  clientStreet: s1,
+                                  clientAddress: [s1, s2, brgy, city, prov].filter(Boolean).join(', ')
+                                };
+                              });
+                            }}
+                          />
+                        </div>
+
+                        <div className="space-y-1 col-span-1">
+                          <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Street / Road</span>
+                          <Input 
+                            className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                            placeholder="e.g. F.B. Harrison St." 
+                            value={proposalDetails.clientStreet2 || ""}
+                            onChange={e => {
+                              const s2 = e.target.value;
+                              setProposalDetails(prev => {
+                                const s1 = prev.clientStreet || "";
+                                const brgy = prev.clientBarangay || "";
+                                const city = prev.clientCity || "";
+                                const prov = prev.clientProvince || "";
+                                return {
+                                  ...prev,
+                                  clientStreet2: s2,
+                                  clientAddress: [s1, s2, brgy, city, prov].filter(Boolean).join(', ')
+                                };
+                              });
+                            }}
+                          />
+                        </div>
+
+                        <div className="space-y-1 col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Barangay</span>
+                            <Input 
+                              className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                              placeholder="e.g. Brgy. 25, Zone 4" 
+                              value={proposalDetails.clientBarangay || ""}
+                              onChange={e => {
+                                const brgy = e.target.value;
+                                setProposalDetails(prev => {
+                                  const s1 = prev.clientStreet || "";
+                                  const s2 = prev.clientStreet2 || "";
+                                  const city = prev.clientCity || "";
+                                  const prov = prev.clientProvince || "";
+                                  return {
+                                    ...prev,
+                                    clientBarangay: brgy,
+                                    clientAddress: [s1, s2, brgy, city, prov].filter(Boolean).join(', ')
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">City / Municipality</span>
+                            <Input 
+                              className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                              placeholder="e.g. Pasay City" 
+                              value={proposalDetails.clientCity || ""}
+                              onChange={e => {
+                                const city = e.target.value;
+                                setProposalDetails(prev => {
+                                  const s1 = prev.clientStreet || "";
+                                  const s2 = prev.clientStreet2 || "";
+                                  const brgy = prev.clientBarangay || "";
+                                  const prov = prev.clientProvince || "";
+                                  return {
+                                    ...prev,
+                                    clientCity: city,
+                                    clientAddress: [s1, s2, brgy, city, prov].filter(Boolean).join(', ')
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-semibold text-[#123765]/70 uppercase tracking-wider">Province / Region</span>
+                            <Input 
+                              className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765]"
+                              placeholder="e.g. Metro Manila" 
+                              value={proposalDetails.clientProvince || ""}
+                              onChange={e => {
+                                const prov = e.target.value;
+                                setProposalDetails(prev => {
+                                  const s1 = prev.clientStreet || "";
+                                  const s2 = prev.clientStreet2 || "";
+                                  const brgy = prev.clientBarangay || "";
+                                  const city = prev.clientCity || "";
+                                  return {
+                                    ...prev,
+                                    clientProvince: prov,
+                                    clientAddress: [s1, s2, brgy, city, prov].filter(Boolean).join(', ')
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Date */}
@@ -1772,10 +2110,14 @@ export default function App() {
                             <div className="space-y-1">
                               <Label className="text-[10px] text-slate-500 uppercase">Amount (Php)</Label>
                               <Input 
-                                type="number"
+                                type="text"
                                 className="h-10 text-sm font-semibold bg-white"
-                                value={proposalDetails.customPhase1Fee}
-                                onChange={(e) => setProposalDetails(prev => ({ ...prev, customPhase1Fee: parseFloat(e.target.value) || 0 }))}
+                                value={proposalDetails.customPhase1Fee ? proposalDetails.customPhase1Fee.toLocaleString('en-US') : ''}
+                                onChange={(e) => {
+                                  const raw = e.target.value.replace(/,/g, '');
+                                  const num = parseFloat(raw);
+                                  setProposalDetails(prev => ({ ...prev, customPhase1Fee: isNaN(num) ? 0 : num }));
+                                }}
                               />
                             </div>
                           ) : (
@@ -1814,10 +2156,14 @@ export default function App() {
                             <div className="space-y-1">
                               <Label className="text-[10px] text-slate-500 uppercase">Amount (Php)</Label>
                               <Input 
-                                type="number"
+                                type="text"
                                 className="h-10 text-sm font-semibold bg-white"
-                                value={proposalDetails.customPhase2Fee}
-                                onChange={(e) => setProposalDetails(prev => ({ ...prev, customPhase2Fee: parseFloat(e.target.value) || 0 }))}
+                                value={proposalDetails.customPhase2Fee ? proposalDetails.customPhase2Fee.toLocaleString('en-US') : ''}
+                                onChange={(e) => {
+                                  const raw = e.target.value.replace(/,/g, '');
+                                  const num = parseFloat(raw);
+                                  setProposalDetails(prev => ({ ...prev, customPhase2Fee: isNaN(num) ? 0 : num }));
+                                }}
                               />
                             </div>
                           ) : (
@@ -1856,10 +2202,14 @@ export default function App() {
                             <div className="space-y-1">
                               <Label className="text-[10px] text-slate-500 uppercase">Amount (Php)</Label>
                               <Input 
-                                type="number"
+                                type="text"
                                 className="h-10 text-sm font-semibold bg-white"
-                                value={proposalDetails.customPhase3Fee}
-                                onChange={(e) => setProposalDetails(prev => ({ ...prev, customPhase3Fee: parseFloat(e.target.value) || 0 }))}
+                                value={proposalDetails.customPhase3Fee ? proposalDetails.customPhase3Fee.toLocaleString('en-US') : ''}
+                                onChange={(e) => {
+                                  const raw = e.target.value.replace(/,/g, '');
+                                  const num = parseFloat(raw);
+                                  setProposalDetails(prev => ({ ...prev, customPhase3Fee: isNaN(num) ? 0 : num }));
+                                }}
                               />
                             </div>
                           ) : (
@@ -1880,10 +2230,14 @@ export default function App() {
                         <div className="space-y-2 p-4 bg-slate-50/50 border rounded-lg">
                           <Label className="text-[10px] text-slate-500 uppercase font-bold block">Gov't Reg. Fee (per agency)</Label>
                           <Input 
-                            type="number"
+                            type="text"
                             className="h-10 text-sm font-semibold bg-white"
-                            value={proposalDetails.govRegFee}
-                            onChange={(e) => setProposalDetails(prev => ({ ...prev, govRegFee: parseFloat(e.target.value) || 0 }))}
+                            value={proposalDetails.govRegFee ? proposalDetails.govRegFee.toLocaleString('en-US') : ''}
+                            onChange={(e) => {
+                              const raw = e.target.value.replace(/,/g, '');
+                              const num = parseFloat(raw);
+                              setProposalDetails(prev => ({ ...prev, govRegFee: isNaN(num) ? 0 : num }));
+                            }}
                           />
                           <p className="text-[9px] text-slate-400 font-medium">Default: Php 10,000.00 (SSS/PhilHealth/Pag-IBIG)</p>
                         </div>
@@ -1892,10 +2246,14 @@ export default function App() {
                         <div className="space-y-2 p-4 bg-slate-50/50 border rounded-lg">
                           <Label className="text-[10px] text-slate-500 uppercase font-bold block">Messengerial (Metro Manila)</Label>
                           <Input 
-                            type="number"
+                            type="text"
                             className="h-10 text-sm font-semibold bg-white"
-                            value={proposalDetails.messengerialMetroManila}
-                            onChange={(e) => setProposalDetails(prev => ({ ...prev, messengerialMetroManila: parseFloat(e.target.value) || 0 }))}
+                            value={proposalDetails.messengerialMetroManila ? proposalDetails.messengerialMetroManila.toLocaleString('en-US') : ''}
+                            onChange={(e) => {
+                              const raw = e.target.value.replace(/,/g, '');
+                              const num = parseFloat(raw);
+                              setProposalDetails(prev => ({ ...prev, messengerialMetroManila: isNaN(num) ? 0 : num }));
+                            }}
                           />
                           <p className="text-[9px] text-slate-400 font-medium">Default: Php 1,000.00 / day of legwork</p>
                         </div>
@@ -1904,10 +2262,14 @@ export default function App() {
                         <div className="space-y-2 p-4 bg-slate-50/50 border rounded-lg">
                           <Label className="text-[10px] text-slate-500 uppercase font-bold block">Messengerial (Outside MM)</Label>
                           <Input 
-                            type="number"
+                            type="text"
                             className="h-10 text-sm font-semibold bg-white"
-                            value={proposalDetails.messengerialOutside}
-                            onChange={(e) => setProposalDetails(prev => ({ ...prev, messengerialOutside: parseFloat(e.target.value) || 0 }))}
+                            value={proposalDetails.messengerialOutside ? proposalDetails.messengerialOutside.toLocaleString('en-US') : ''}
+                            onChange={(e) => {
+                              const raw = e.target.value.replace(/,/g, '');
+                              const num = parseFloat(raw);
+                              setProposalDetails(prev => ({ ...prev, messengerialOutside: isNaN(num) ? 0 : num }));
+                            }}
                           />
                           <p className="text-[9px] text-slate-400 font-medium">Default: Php 1,500.00 / day of legwork</p>
                         </div>

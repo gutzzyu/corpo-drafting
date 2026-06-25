@@ -14,6 +14,9 @@ export interface PurposeRow {
 export interface SPADetails {
   paperSize: 'legal' | 'a4' | 'letter';
   affiantName: string;
+  affiantFirstName?: string;
+  affiantMiddleInitial?: string;
+  affiantLastName?: string;
   nationality: string;
   civilStatus: string;
   address: string;
@@ -46,7 +49,15 @@ export interface SecDetails {
 
 export interface ProposalDetails {
   clientName: string;
+  clientFirstName?: string;
+  clientMiddleInitial?: string;
+  clientLastName?: string;
   clientAddress: string;
+  clientStreet?: string;
+  clientStreet2?: string;
+  clientBarangay?: string;
+  clientCity?: string;
+  clientProvince?: string;
   proposalDate: string;
   isCustomsLinked: boolean;
   includePhase1: boolean;

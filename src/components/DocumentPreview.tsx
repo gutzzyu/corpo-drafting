@@ -79,6 +79,13 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
   };
 
   const getClientLastName = (fullName: string) => {
+    if (proposalDetails?.clientLastName) {
+      return proposalDetails.clientLastName
+        .trim()
+        .split(/\s+/)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    }
     if (!fullName) return "Client";
     const cleaned = fullName.trim();
     const parts = cleaned.split(/\s+/);
@@ -384,7 +391,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Cover Page Footer */}
-                <div className="select-none">
+                <div className="select-none -mx-[0.6in]">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -399,7 +406,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               <div className={getProposalPageClass()}>
                 <div>
                   {/* Compact Letterhead */}
-                  <div className="flex justify-between items-center mb-6 select-none border-b border-black/10 pb-4">
+                  <div className="flex justify-between items-center mb-6 select-none pb-4 -mx-[0.6in]">
                     <div className="flex items-center gap-3">
                       <img 
                         src="/custom_logo/header.png" 
@@ -417,12 +424,28 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
 
                   {/* Letter Metadata */}
                   <div className="space-y-3 text-[11pt]">
-                    <div className="leading-snug">
+                    <div className="leading-normal text-left" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
                       <div className="font-bold uppercase text-black">
                         {proposalDetails?.clientName || "[CLIENT NAME]"}
                       </div>
-                      <div className="text-black uppercase max-w-md text-[10px] leading-relaxed">
-                        {proposalDetails?.clientAddress || "PASAY CITY, METRO MANILA"}
+                      <div className="text-black font-normal" style={{ textTransform: 'none' }}>
+                        {proposalDetails?.clientStreet || proposalDetails?.clientStreet2 || proposalDetails?.clientBarangay || proposalDetails?.clientCity || proposalDetails?.clientProvince ? (
+                          <>
+                            {proposalDetails.clientStreet && (
+                              <div>
+                                {proposalDetails.clientStreet}
+                                {proposalDetails.clientBarangay ? `, ${proposalDetails.clientBarangay},` : ","}
+                              </div>
+                            )}
+                            <div>
+                              {proposalDetails.clientStreet2 ? `${proposalDetails.clientStreet2}, ` : ""}
+                              {proposalDetails.clientCity || ""}
+                              {proposalDetails.clientProvince ? `, ${proposalDetails.clientProvince}` : ""}
+                            </div>
+                          </>
+                        ) : (
+                          proposalDetails?.clientAddress || "PASAY CITY, METRO MANILA"
+                        )}
                       </div>
                     </div>
 
@@ -492,7 +515,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Footer */}
-                <div className="select-none">
+                <div className="select-none -mx-[0.6in]">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -506,10 +529,21 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               {/* PAGE 3: BIR CONTINUED & PHASE III & FEES */}
               <div className={getProposalPageClass()}>
                 <div>
-                  {/* Running Header */}
-                  <div className="flex justify-between items-center mb-6 pb-2 border-b border-black/10 text-[9pt] font-sans tracking-wide text-slate-500 uppercase select-none">
-                    <div>Sadsad Tamesis Legal and Accountancy Firm</div>
-                    <div>Proposal for Legal Services</div>
+                  {/* Compact Letterhead */}
+                  <div className="flex justify-between items-center mb-6 select-none pb-4 -mx-[0.6in]">
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src="/custom_logo/header.png" 
+                        alt="STLAF Logo" 
+                        className="h-20 max-h-20 w-auto object-contain" 
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "9.5pt" }}>
+                      7F, Victoria Sports Tower<br />
+                      EDSA, South Triangle, Quezon City, Philippines<br />
+                      legal@sadsadtamesislaw.com | (02) 8463-494
+                    </div>
                   </div>
 
                   <div className="space-y-3">
@@ -629,7 +663,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Footer */}
-                <div className="select-none">
+                <div className="select-none -mx-[0.6in]">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -643,10 +677,21 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               {/* PAGE 4: ADMINISTRATIVE & SIGN OFF */}
               <div className={getProposalPageClass()}>
                 <div>
-                  {/* Running Header */}
-                  <div className="flex justify-between items-center mb-6 pb-2 border-b border-black/10 text-[9pt] font-sans tracking-wide text-slate-500 uppercase select-none">
-                    <div>Sadsad Tamesis Legal and Accountancy Firm</div>
-                    <div>Proposal for Legal Services</div>
+                  {/* Compact Letterhead */}
+                  <div className="flex justify-between items-center mb-6 select-none pb-4 -mx-[0.6in]">
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src="/custom_logo/header.png" 
+                        alt="STLAF Logo" 
+                        className="h-20 max-h-20 w-auto object-contain" 
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "9.5pt" }}>
+                      7F, Victoria Sports Tower<br />
+                      EDSA, South Triangle, Quezon City, Philippines<br />
+                      legal@sadsadtamesislaw.com | (02) 8463-494
+                    </div>
                   </div>
 
                   <div className="space-y-3 text-[11pt]">
@@ -690,7 +735,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                     </div>
 
                     {/* CONFORMITY */}
-                    <div className="pt-2 border-t border-black/10" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
+                    <div className="pt-2" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
                       <div className="text-left font-bold uppercase tracking-wide text-black mb-2 underline">
                         ACCEPTANCE and CONFORMITY
                       </div>
@@ -773,7 +818,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Footer */}
-                <div className="select-none">
+                <div className="select-none -mx-[0.6in]">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
