@@ -675,7 +675,7 @@ export default function App() {
                           <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Full Name of Principal (Affiant)</Label>
                           <Input 
                             className="h-12 border-slate-200"
-                            placeholder="e.g., JUAN P. DELA CRUZ" 
+                            placeholder="Principal (Affiant) Name" 
                             value={details.affiantName}
                             onChange={e => setDetails(prev => ({ ...prev, affiantName: e.target.value }))}
                           />
@@ -1027,7 +1027,7 @@ export default function App() {
                       <div className="space-y-2">
                         <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Enter Signatory Name</Label>
                         <Input 
-                          placeholder="e.g. Juan Dela Cruz" 
+                          placeholder="Signatory Name" 
                           className="h-12 border-slate-200"
                           value={secManualSignatory}
                           onChange={(e) => setSecManualSignatory(e.target.value)}
@@ -1498,7 +1498,7 @@ export default function App() {
                       <div className="space-y-2">
                         <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Enter Signatory Name</Label>
                         <Input 
-                          placeholder="e.g. Juan Dela Cruz" 
+                          placeholder="Signatory Name" 
                           className="h-12 border-slate-200"
                           value={secManualSignatory}
                           onChange={(e) => setSecManualSignatory(e.target.value)}
@@ -1709,7 +1709,7 @@ export default function App() {
                     <div className="space-y-2 col-span-1">
                       <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Client Name</Label>
                       <Input 
-                        placeholder="e.g. AW WAI KHEONG" 
+                        placeholder="Client Name" 
                         className="h-12 border-slate-200 focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765] transition-all font-semibold"
                         value={proposalDetails.clientName}
                         onChange={(e) => setProposalDetails(prev => ({ ...prev, clientName: e.target.value.toUpperCase() }))}
@@ -1720,7 +1720,7 @@ export default function App() {
                     <div className="space-y-2 md:col-span-2">
                       <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Client Address</Label>
                       <Textarea 
-                        placeholder="e.g. 2162-2188 Unit C., Brgy. 25, Zone 4, F.B. Harrison St., Pasay City" 
+                        placeholder="Client Address" 
                         className="min-h-[80px] border-slate-200 leading-relaxed focus:ring-2 focus:ring-[#123765]/20 focus:border-[#123765] transition-all"
                         value={proposalDetails.clientAddress}
                         onChange={(e) => setProposalDetails(prev => ({ ...prev, clientAddress: e.target.value }))}

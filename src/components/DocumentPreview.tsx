@@ -88,7 +88,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
     if ((lowerLast === 'jr' || lowerLast === 'jr.' || lowerLast === 'sr' || lowerLast === 'sr.' || lowerLast === 'iii' || lowerLast === 'ii' || lowerLast === 'iv') && parts.length > 1) {
       last = parts[parts.length - 2];
     }
-    return last;
+    return last.charAt(0).toUpperCase() + last.slice(1).toLowerCase();
   };
 
   const formatProposalDate = (dateString: string) => {
@@ -108,6 +108,14 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
     legal: 'w-[8.5in] min-h-[13in]',
     a4: 'w-[210mm] min-h-[297mm]',
     letter: 'w-[8.5in] min-h-[11in]'
+  };
+
+  const getProposalPageClass = () => {
+    return cn(
+      "bg-white shadow-2xl relative flex flex-col justify-between text-justify select-text",
+      paperSize === 'legal' ? 'w-[8.5in] h-[13in] min-h-[13in]' : paperSize === 'a4' ? 'w-[210mm] h-[297mm] min-h-[297mm]' : 'w-[8.5in] h-[11in] min-h-[11in]',
+      "pt-[0.5in] pb-[0.8in] px-[0.8in] mb-8 print:mb-0 print:shadow-none print:w-full print:h-screen print:min-h-0 print:p-0"
+    );
   };
 
   return (
@@ -140,7 +148,10 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
             padding: 0 !important;
           }
 
-          @page { size: ${paperSize === 'legal' ? '8.5in 13in' : paperSize}; margin: 1in; }
+          @page { 
+            size: ${paperSize === 'legal' ? '8.5in 13in' : paperSize}; 
+            margin: ${documentType === 'proposal' ? '0.5in 0.8in 0.8in 0.8in' : '1in'}; 
+          }
           
           .page-break { page-break-before: always !important; }
           .no-break { page-break-inside: avoid !important; }
@@ -154,12 +165,14 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
       <div
         ref={contentRef}
         className={cn(
-          "bg-white shadow-2xl p-[1in] document-font text-black text-[12pt] print:shadow-none print:p-0 print:m-0 print-content",
-          paperClasses[paperSize]
+          "document-font text-black text-[12pt] print:shadow-none print:p-0 print:m-0 print-content w-full flex flex-col items-center",
+          documentType === 'proposal'
+            ? "bg-transparent shadow-none p-0 m-0"
+            : cn("bg-white shadow-2xl p-[1in]", paperClasses[paperSize])
         )}
       >
         {/* Page 1 Content */}
-        <div className="flex flex-col" ref={contentContainerRef}>
+        <div className="flex flex-col w-full items-center" ref={contentContainerRef}>
           {documentType === 'spa' ? (
             <>
               <div className="text-center font-bold mb-12 uppercase">
@@ -346,58 +359,64 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                </div>
              </>
           ) : (
-            <div className="text-black leading-relaxed antialiased font-book-antiqua" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
+            <div className="text-black leading-relaxed antialiased font-book-antiqua w-full flex flex-col items-center" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
               {/* PAGE 1: COVER PAGE */}
-              <div className="flex flex-col items-center justify-between text-center pt-24 pb-12" style={{ minHeight: innerPageHeight }}>
-                <div className="flex flex-col items-center w-full max-w-xl">
+              <div className={getProposalPageClass()}>
+                <div className="flex flex-col items-center w-full max-w-xl mx-auto pt-16">
                   {/* Central premium STLAF Logo */}
                   <div className="flex flex-col items-center select-none">
                     <img 
                       src="/custom_logo/header.png" 
                       alt="STLAF Logo" 
-                      className="h-96 max-h-96 w-auto object-contain" 
+                      className="h-80 max-h-80 w-auto object-contain" 
                       referrerPolicy="no-referrer"
                     />
                   </div>
                 </div>
 
-                <div className="my-auto py-12 flex flex-col items-center w-full">
+                <div className="my-auto py-8 flex flex-col items-center w-full">
                   {/* Dynamic Client display exactly matching target PDF style */}
                   <div className="w-auto border-b border-black pb-2 px-12">
-                    <h1 className="text-[26px] font-extrabold text-black uppercase tracking-wider">
+                    <h1 className="text-[26px] font-bold text-black uppercase tracking-wider text-center">
                       {proposalDetails?.clientName || "[CLIENT NAME]"}
                     </h1>
+                  </div>
+                </div>
+
+                {/* Cover Page Footer */}
+                <div className="select-none">
+                  <div className="w-full border-t-[3px] border-black mb-2"></div>
+                  <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
+                    www.stlaf.global
                   </div>
                 </div>
               </div>
 
               {/* Page Break to Page 2 */}
-              <div className="page-break h-[1.2in] print:h-0" />
+              <div className="page-break" />
 
               {/* PAGE 2: COVER LETTER & FIRST MODULE */}
-              <div className="flex flex-col pt-4 text-justify justify-between" style={{ minHeight: innerPageHeight }}>
+              <div className={getProposalPageClass()}>
                 <div>
-                  {/* Letterhead */}
-                  <div className="flex justify-between items-center -mt-[0.8in] -mx-[0.6in] mb-6 select-none">
+                  {/* Compact Letterhead */}
+                  <div className="flex justify-between items-center mb-6 select-none border-b border-black/10 pb-4">
                     <div className="flex items-center gap-3">
                       <img 
                         src="/custom_logo/header.png" 
                         alt="STLAF Logo" 
-                        className="h-28 max-h-28 w-auto object-contain" 
+                        className="h-20 max-h-20 w-auto object-contain" 
                         referrerPolicy="no-referrer"
                       />
                     </div>
-                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "10pt" }}>
+                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "9.5pt" }}>
                       7F, Victoria Sports Tower<br />
-                      EDSA, South Triangle,<br />
-                      Quezon City, Philippines<br />
-                      legal@sadsadtamesislaw.com<br />
-                      (02) 8463-494 / +63948-961-2397
+                      EDSA, South Triangle, Quezon City, Philippines<br />
+                      legal@sadsadtamesislaw.com | (02) 8463-494
                     </div>
                   </div>
 
                   {/* Letter Metadata */}
-                  <div className="space-y-4 text-[11pt]">
+                  <div className="space-y-3 text-[11pt]">
                     <div className="leading-snug">
                       <div className="font-bold uppercase text-black">
                         {proposalDetails?.clientName || "[CLIENT NAME]"}
@@ -411,7 +430,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       {formatProposalDate(proposalDetails?.proposalDate || "")}
                     </div>
 
-                    <div className="font-bold text-black pb-2 text-[11pt] tracking-wide">
+                    <div className="font-bold text-black pb-1 text-[11pt] tracking-wide">
                       PROPOSAL TO PROVIDE LEGAL ASSISTANCE AND ADVISORY SERVICES
                     </div>
 
@@ -473,7 +492,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Footer */}
-                <div className="mt-auto pt-4 select-none -mx-[0.6in]">
+                <div className="select-none">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -482,31 +501,18 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               </div>
 
               {/* Page Break to Page 3 */}
-              <div className="page-break h-[1.2in] print:h-0" />
+              <div className="page-break" />
 
               {/* PAGE 3: BIR CONTINUED & PHASE III & FEES */}
-              <div className="flex flex-col pt-4 text-justify justify-between" style={{ minHeight: innerPageHeight }}>
+              <div className={getProposalPageClass()}>
                 <div>
-                  {/* Letterhead */}
-                  <div className="flex justify-between items-center -mt-[0.8in] -mx-[0.6in] mb-6 select-none">
-                    <div className="flex items-center gap-3">
-                      <img 
-                        src="/custom_logo/header.png" 
-                        alt="STLAF Logo" 
-                        className="h-28 max-h-28 w-auto object-contain" 
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
-                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "10pt" }}>
-                      7F, Victoria Sports Tower<br />
-                      EDSA, South Triangle,<br />
-                      Quezon City, Philippines<br />
-                      legal@sadsadtamesislaw.com<br />
-                      (02) 8463-494 / +63948-961-2397
-                    </div>
+                  {/* Running Header */}
+                  <div className="flex justify-between items-center mb-6 pb-2 border-b border-black/10 text-[9pt] font-sans tracking-wide text-slate-500 uppercase select-none">
+                    <div>Sadsad Tamesis Legal and Accountancy Firm</div>
+                    <div>Proposal for Legal Services</div>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {/* PHASE II PART II */}
                     {proposalDetails?.includePhase2 && (
                       <div className="space-y-1">
@@ -548,7 +554,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         Our usual professional fees are a function of the time spent required to carry out the engagement. All professional fees shall be exclusive of VAT and withholding taxes. In summary:
                       </p>
 
-                      <div className="space-y-4">
+                      <div className="space-y-3">
                         {/* Phase 1 display block */}
                         {proposalDetails?.includePhase1 && (
                           <div className="text-[11pt] text-black space-y-1">
@@ -617,23 +623,13 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                             </div>
                           </div>
                         )}
-
                       </div>
                     </div>
-
-                    {/* SSS Note Block matches PDF */}
-                    <p className="text-black text-[11pt] leading-relaxed pt-2">
-                      Should you choose our law firm to register your business with the Social Security System (SSS), the Philippine Health Insurance Corporation (PhilHealth), and the Home Mutual Development Fund (HMDF/Pag-IBIG), the scope of this service includes the registration and acquisition of a corporate ID number for SSS, PhilHealth and Pag-IBIG. For the foregoing service, our professional fees shall be fixed at <span className="font-semibold text-black">Php {((proposalDetails?.govRegFee !== undefined ? proposalDetails.govRegFee : 10000)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> per Government Agency required.
-                    </p>
-
-                    <p className="text-black text-[11pt] leading-relaxed">
-                      We shall send you our billings every fifth (5th) day of each month and expect payment from you no later than the tenth (10th) day of the same month, or five (5) days from the date of billing.
-                    </p>
                   </div>
                 </div>
 
                 {/* Footer */}
-                <div className="mt-auto pt-4 select-none -mx-[0.6in]">
+                <div className="select-none">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -642,31 +638,27 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               </div>
 
               {/* Page Break to Page 4 */}
-              <div className="page-break h-[1.2in] print:h-0" />
+              <div className="page-break" />
 
               {/* PAGE 4: ADMINISTRATIVE & SIGN OFF */}
-              <div className="flex flex-col pt-4 text-justify justify-between" style={{ minHeight: innerPageHeight }}>
+              <div className={getProposalPageClass()}>
                 <div>
-                  {/* Letterhead */}
-                  <div className="flex justify-between items-center -mt-[0.8in] -mx-[0.6in] mb-6 select-none">
-                    <div className="flex items-center gap-3">
-                      <img 
-                        src="/custom_logo/header.png" 
-                        alt="STLAF Logo" 
-                        className="h-28 max-h-28 w-auto object-contain" 
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
-                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "10pt" }}>
-                      7F, Victoria Sports Tower<br />
-                      EDSA, South Triangle,<br />
-                      Quezon City, Philippines<br />
-                      legal@sadsadtamesislaw.com<br />
-                      (02) 8463-494 / +63948-961-2397
-                    </div>
+                  {/* Running Header */}
+                  <div className="flex justify-between items-center mb-6 pb-2 border-b border-black/10 text-[9pt] font-sans tracking-wide text-slate-500 uppercase select-none">
+                    <div>Sadsad Tamesis Legal and Accountancy Firm</div>
+                    <div>Proposal for Legal Services</div>
                   </div>
 
-                  <div className="space-y-4 text-[11pt]">
+                  <div className="space-y-3 text-[11pt]">
+                    {/* SSS Note Block matches PDF */}
+                    <p className="text-black text-[11pt] leading-relaxed">
+                      Should you choose our law firm to register your business with the Social Security System (SSS), the Philippine Health Insurance Corporation (PhilHealth), and the Home Mutual Development Fund (HMDF/Pag-IBIG), the scope of this service includes the registration and acquisition of a corporate ID number for SSS, PhilHealth and Pag-IBIG. For the foregoing service, our professional fees shall be fixed at <span className="font-semibold text-black">Php {((proposalDetails?.govRegFee !== undefined ? proposalDetails.govRegFee : 10000)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> per Government Agency required.
+                    </p>
+
+                    <p className="text-black text-[11pt] leading-relaxed">
+                      We shall send you our billings every fifth (5th) day of each month and expect payment from you no later than the tenth (10th) day of the same month, or five (5) days from the date of billing.
+                    </p>
+
                     <p className="text-black leading-relaxed text-justify">
                       If your account is not paid within the 5-day limit, following our firm policy, the firm’s management will insist that no further work be done on your file until the account is paid and your retainer is brought up to date.
                     </p>
@@ -683,10 +675,11 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       You may rest assured that we will exert our best efforts to complete the engagement most professionally and expeditiously consistent with our desire to provide distinguished services.
                     </p>
 
+                    {/* SINCERELY YOURS AND ATTY CHRIS */}
                     <div className="pt-2 select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
-                      <div className="text-black mb-12">Sincerely yours,</div>
+                      <div className="text-black mb-8">Sincerely yours,</div>
                       
-                      <div className="mb-10">
+                      <div className="mb-4">
                         <div className="font-bold uppercase text-black leading-tight">
                           ATTY. CHRIS C. TAMESIS
                         </div>
@@ -697,12 +690,12 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                     </div>
 
                     {/* CONFORMITY */}
-                    <div className="pt-4 mt-4" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
-                      <div className="text-left font-bold uppercase tracking-wide text-black mb-4 underline">
+                    <div className="pt-2 border-t border-black/10" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
+                      <div className="text-left font-bold uppercase tracking-wide text-black mb-2 underline">
                         ACCEPTANCE and CONFORMITY
                       </div>
 
-                      <div className="grid grid-cols-[1.1fr_1fr] gap-6 items-start">
+                      <div className="grid grid-cols-[1.2fr_1.1fr] gap-6 items-start">
                         {/* Acceptance text paragraph */}
                         <div>
                           <p className="text-black text-justify leading-relaxed">
@@ -716,37 +709,37 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                             <tbody>
                               <tr className="border-b border-black">
                                 <td className="py-0.5 px-2 border-r border-black italic text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>Phase 1</td>
-                                <td className="py-0.5 px-2 text-center">
+                                <td className="py-0.5 px-2 text-center w-12">
                                   <div className="w-4 h-4 border border-black mx-auto"></div>
                                 </td>
                               </tr>
                               <tr className="border-b border-black">
                                 <td className="py-0.5 px-2 border-r border-black italic text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>Phase 2</td>
-                                <td className="py-0.5 px-2 text-center">
+                                <td className="py-0.5 px-2 text-center w-12">
                                   <div className="w-4 h-4 border border-black mx-auto"></div>
                                 </td>
                               </tr>
                               <tr className="border-b border-black">
                                 <td className="py-0.5 px-2 border-r border-black italic text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>Phase 3</td>
-                                <td className="py-0.5 px-2 text-center">
+                                <td className="py-0.5 px-2 text-center w-12">
                                   <div className="w-4 h-4 border border-black mx-auto"></div>
                                 </td>
                               </tr>
                               <tr className="border-b border-black">
                                 <td className="py-0.5 px-2 border-r border-black italic uppercase text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>SSS</td>
-                                <td className="py-0.5 px-2 text-center">
+                                <td className="py-0.5 px-2 text-center w-12">
                                   <div className="w-4 h-4 border border-black mx-auto"></div>
                                 </td>
                               </tr>
                               <tr className="border-b border-black">
                                 <td className="py-0.5 px-2 border-r border-black italic uppercase text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>PAG-IBIG</td>
-                                <td className="py-0.5 px-2 text-center">
+                                <td className="py-0.5 px-2 text-center w-12">
                                   <div className="w-4 h-4 border border-black mx-auto"></div>
                                 </td>
                               </tr>
                               <tr>
                                 <td className="py-0.5 px-2 border-r border-black italic uppercase text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>PHILHEALTH</td>
-                                <td className="py-0.5 px-2 text-center">
+                                <td className="py-0.5 px-2 text-center w-12">
                                   <div className="w-4 h-4 border border-black mx-auto"></div>
                                 </td>
                               </tr>
@@ -755,13 +748,13 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         </div>
                       </div>
 
-                      {/* Client Signature and Date Signed centered horizontally */}
-                      <div className="flex flex-col items-center justify-center mt-12 space-y-16 text-center select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
+                      {/* Client Signature and Date Signed centered horizontally after the acceptance content */}
+                      <div className="flex flex-col items-center justify-center mt-6 space-y-8 text-center select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
                         <div className="flex flex-col items-center">
                           <span className="text-black select-none leading-none mb-1">
                             .........................................................................
                           </span>
-                          <span className="font-bold uppercase tracking-wide text-black" style={{ fontSize: "12pt" }}>
+                          <span className="font-bold uppercase tracking-wide text-black text-[12pt]">
                             {proposalDetails?.clientName || "[CLIENT NAME]"}
                           </span>
                         </div>
@@ -770,7 +763,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                           <span className="text-black select-none leading-none mb-1">
                             .........................................................................
                           </span>
-                          <span className="font-bold uppercase tracking-wide text-black" style={{ fontSize: "12pt" }}>
+                          <span className="font-bold uppercase tracking-wide text-black text-[12pt]">
                             DATE SIGNED
                           </span>
                         </div>
@@ -780,7 +773,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Footer */}
-                <div className="mt-auto pt-4 select-none -mx-[0.6in]">
+                <div className="select-none">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
