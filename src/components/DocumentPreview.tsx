@@ -16,6 +16,16 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
   const contentContainerRef = useRef<HTMLDivElement>(null);
   const currentYear = new Date().getFullYear();
 
+  const phase1Base = proposalDetails?.phase1Fee ?? 50000;
+  const phase2Base = proposalDetails?.phase2Fee ?? 30000;
+  const phase3Base = proposalDetails?.phase3Fee ?? 30000;
+  const isDiscount = !!proposalDetails?.isDiscountEligible;
+  const discountPct = proposalDetails?.discountPercentage ?? 10;
+
+  const phase1Final = isDiscount ? phase1Base * (1 - discountPct / 100) : phase1Base;
+  const phase2Final = isDiscount ? phase2Base * (1 - discountPct / 100) : phase2Base;
+  const phase3Final = isDiscount ? phase3Base * (1 - discountPct / 100) : phase3Base;
+
   const {
     affiantName,
     nationality,
@@ -27,6 +37,8 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
     purposes,
     paperSize
   } = details;
+
+  const innerPageHeight = paperSize === 'legal' ? '10.8in' : paperSize === 'a4' ? '9.4in' : '8.8in';
 
   useEffect(() => {
     const updatePages = () => {
@@ -336,12 +348,12 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
           ) : (
             <div className="text-black leading-relaxed antialiased font-book-antiqua" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
               {/* PAGE 1: COVER PAGE */}
-              <div className="flex flex-col items-center justify-between min-h-[9.5in] text-center pt-24 pb-12">
+              <div className="flex flex-col items-center justify-between text-center pt-24 pb-12" style={{ minHeight: innerPageHeight }}>
                 <div className="flex flex-col items-center w-full max-w-xl">
                   {/* Central premium STLAF Logo */}
                   <div className="flex flex-col items-center select-none">
                     <img 
-                      src="/custom_logo/proposal.png" 
+                      src="/custom_logo/header.png" 
                       alt="STLAF Logo" 
                       className="h-96 max-h-96 w-auto object-contain" 
                       referrerPolicy="no-referrer"
@@ -360,22 +372,22 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               </div>
 
               {/* Page Break to Page 2 */}
-              <div className="page-break pt-6" />
+              <div className="page-break h-[1.2in] print:h-0" />
 
               {/* PAGE 2: COVER LETTER & FIRST MODULE */}
-              <div className="flex flex-col pt-4 text-justify min-h-[9.5in] justify-between">
+              <div className="flex flex-col pt-4 text-justify justify-between" style={{ minHeight: innerPageHeight }}>
                 <div>
                   {/* Letterhead */}
-                  <div className="flex justify-between items-center border-b border-black pb-3 mb-6 select-none">
+                  <div className="flex justify-between items-center -mt-[0.8in] -mx-[0.6in] mb-6 select-none">
                     <div className="flex items-center gap-3">
                       <img 
-                        src="/custom_logo/proposal.png" 
+                        src="/custom_logo/header.png" 
                         alt="STLAF Logo" 
-                        className="h-36 max-h-36 w-auto object-contain" 
+                        className="h-28 max-h-28 w-auto object-contain" 
                         referrerPolicy="no-referrer"
                       />
                     </div>
-                    <div className="text-right text-[7.5px] font-medium text-black uppercase tracking-wider leading-relaxed font-book-antiqua" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
+                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "10pt" }}>
                       7F, Victoria Sports Tower<br />
                       EDSA, South Triangle,<br />
                       Quezon City, Philippines<br />
@@ -399,27 +411,27 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       {formatProposalDate(proposalDetails?.proposalDate || "")}
                     </div>
 
-                    <div className="font-bold text-black border-b border-dashed border-black pb-2 text-[11pt] tracking-wide">
+                    <div className="font-bold text-black pb-2 text-[11pt] tracking-wide">
                       PROPOSAL TO PROVIDE LEGAL ASSISTANCE AND ADVISORY SERVICES
                     </div>
 
                     <div className="text-black text-[11pt]">
-                      Dear Mr. {getClientLastName(proposalDetails?.clientName || "")},
+                      Dear {proposalDetails?.salutation || "Mr."} {getClientLastName(proposalDetails?.clientName || "")},
                     </div>
 
-                    <p className="text-black indent-12 text-justify text-[11pt] leading-relaxed">
+                    <p className="text-black text-justify text-[11pt] leading-relaxed">
                       Thank you for considering STLAF (Sadsad Tamesis Legal and Accountancy Firm) to provide you with our legal services. At STLAF, we take pride in delivering more than just legal counsel and numerical analysis. Our approach emphasizes providing insights that transcend mere legalities and financial figures, ensuring the highest quality and excellence in our services.
                     </p>
 
-                    <p className="text-black indent-12 text-justify text-[11pt] leading-relaxed">
+                    <p className="text-black text-justify text-[11pt] leading-relaxed">
                       We are pleased to submit this proposal to you, offering legal assistance and advisory services for <span className="font-semibold text-black">{proposalDetails?.clientName || "the Client"}</span> for incorporation of new business.
                     </p>
 
-                    <p className="text-black indent-12 text-justify text-[11pt] leading-relaxed">
+                    <p className="text-black text-justify text-[11pt] leading-relaxed">
                       Upon acceptance, this proposal will serve as the contractual agreement between us, outlining the scope of services to be provided and confirming the respective responsibilities of both parties regarding the discussed engagement.
                     </p>
 
-                    <div className="font-bold underline text-[11pt] text-black pt-1 uppercase tracking-wider">
+                    <div className="font-bold italic text-[11pt] text-black pt-1">
                       Scope of Services
                     </div>
 
@@ -433,7 +445,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
                            PHASE I: Securities and Exchange Commission (SEC)
                         </div>
-                        <ul className="list-decimal pl-5 text-[11pt] text-black space-y-0.5">
+                        <ul className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
                           <li>Legal advisory on how to put up a corporation in the Philippines;</li>
                           <li>Reservation and acquisition of Company name from the SEC;</li>
                           <li>Assistance in the drafting of documents, as necessary, to be submitted with the SEC, including By-Laws, Articles of Incorporation, Treasurer’s Affidavit, among others;</li>
@@ -448,9 +460,9 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                     {proposalDetails?.includePhase2 && (
                       <div className="space-y-1 pt-1 break-inside-avoid">
                         <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
-                          PHASE II: Bureau of Internal Revenue (BIR)
+                           PHASE II: Bureau of Internal Revenue (BIR)
                         </div>
-                        <ul className="list-decimal pl-5 text-[11pt] text-black space-y-0.5">
+                        <ul className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
                           <li>Preparation and acquisition of the necessary documents to be submitted to the BIR;</li>
                           <li>Drafting of Secretary’s Certificate and other documentary requirements;</li>
                           <li>Requisition of the Tax Identification Number of the new business;</li>
@@ -459,25 +471,33 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                     )}
                   </div>
                 </div>
+
+                {/* Footer */}
+                <div className="mt-auto pt-4 select-none -mx-[0.6in]">
+                  <div className="w-full border-t-[3px] border-black mb-2"></div>
+                  <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
+                    www.stlaf.global
+                  </div>
+                </div>
               </div>
 
               {/* Page Break to Page 3 */}
-              <div className="page-break pt-6" />
+              <div className="page-break h-[1.2in] print:h-0" />
 
               {/* PAGE 3: BIR CONTINUED & PHASE III & FEES */}
-              <div className="flex flex-col pt-4 text-justify min-h-[9.5in] justify-between">
+              <div className="flex flex-col pt-4 text-justify justify-between" style={{ minHeight: innerPageHeight }}>
                 <div>
                   {/* Letterhead */}
-                  <div className="flex justify-between items-center border-b border-black pb-3 mb-6 select-none">
+                  <div className="flex justify-between items-center -mt-[0.8in] -mx-[0.6in] mb-6 select-none">
                     <div className="flex items-center gap-3">
                       <img 
-                        src="/custom_logo/proposal.png" 
+                        src="/custom_logo/header.png" 
                         alt="STLAF Logo" 
-                        className="h-36 max-h-36 w-auto object-contain" 
+                        className="h-28 max-h-28 w-auto object-contain" 
                         referrerPolicy="no-referrer"
                       />
                     </div>
-                    <div className="text-right text-[7.5px] font-medium text-black uppercase tracking-wider leading-relaxed font-book-antiqua" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
+                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "10pt" }}>
                       7F, Victoria Sports Tower<br />
                       EDSA, South Triangle,<br />
                       Quezon City, Philippines<br />
@@ -493,7 +513,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
                           PHASE II: Bureau of Internal Revenue (BIR) (cont'd)
                         </div>
-                        <ul className="list-decimal pl-5 text-[11pt] text-black space-y-0.5" start={4}>
+                        <ul className="list-decimal pl-12 text-[11pt] text-black space-y-0.5" start={4}>
                           <li>Coordination with your authorized representative and finalization of required documents to be submitted to the BIR;</li>
                           <li>Requisition of the Certificate of the Authority to Print Receipts; and</li>
                           <li>Acquisition of BIR Certificate of Registration.</li>
@@ -507,7 +527,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
                           PHASE III: Local Government Unit Permit to Operate (Mayor’s Permit)
                         </div>
-                        <ul className="list-decimal pl-5 text-[11pt] text-black space-y-0.5">
+                        <ul className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
                           <li>Coordination with the Local Government where the Company will operate;</li>
                           <li>Collation of all necessary documents to be submitted to the local government;</li>
                           <li>Drafting of Secretary’s Certificate and other documentary requirements;</li>
@@ -521,110 +541,89 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
 
                     {/* FEE ARRANGEMENT */}
                     <div className="pt-2">
-                      <div className="font-bold underline text-[11pt] text-black mb-1 uppercase">
+                      <div className="font-bold italic text-[11pt] text-black mb-1">
                         Fee arrangement
                       </div>
-                      <p className="text-black text-[11pt] leading-relaxed mb-4">
+                      <p className="text-black text-[11pt] leading-relaxed mb-4 text-justify">
                         Our usual professional fees are a function of the time spent required to carry out the engagement. All professional fees shall be exclusive of VAT and withholding taxes. In summary:
                       </p>
 
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         {/* Phase 1 display block */}
                         {proposalDetails?.includePhase1 && (
-                          <div className="text-xs">
-                            <div className="grid grid-cols-[1fr_auto] gap-2 items-baseline font-bold text-black">
-                              <span className="uppercase text-[10px] tracking-wide">PHASE 1. SECURITIES AND EXCHANGE COMMISSION</span>
-                              <span className="font-mono text-[11px] text-black">
-                                Php {proposalDetails?.isDiscountEligible ? (
-                                  (proposalDetails.phase1Fee * (1 - proposalDetails.discountPercentage / 100)).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                                ) : (
-                                  proposalDetails.phase1Fee.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                                )}
-                              </span>
+                          <div className="text-[11pt] text-black space-y-1">
+                            <div className="font-bold pl-12 uppercase select-none">
+                              PHASE 1. SECURITIES AND EXCHANGE COMMISSION
                             </div>
-                            <div className="grid grid-cols-[1fr_auto] gap-2 text-[10px] text-black leading-none">
-                              <span>Upon acceptance of this proposal</span>
-                              {proposalDetails?.isDiscountEligible && (
-                                <span className="text-black font-semibold text-[9.5px]">
-                                  ({proposalDetails.discountPercentage}% discount from Php {proposalDetails.phase1Fee.toLocaleString('en-PH', { minimumFractionDigits: 2 })})
+                            <div className="pl-24 grid grid-cols-[280px_30px_1fr] text-[11pt] text-black items-baseline leading-normal">
+                              <div>Upon acceptance of this proposal</div>
+                              <div className="text-center">-</div>
+                              <div>
+                                <span className="font-bold">
+                                  Php {phase1Final.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </span>
-                              )}
+                                {isDiscount && (
+                                  <span className="block text-[11pt] italic mt-0.5 select-none text-black">
+                                    {discountPct}% discount from Php {phase1Base.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         )}
 
                         {/* Phase 2 display block */}
                         {proposalDetails?.includePhase2 && (
-                          <div className="text-xs pt-1">
-                            <div className="grid grid-cols-[1fr_auto] gap-2 items-baseline font-bold text-black">
-                              <span className="uppercase text-[10px] tracking-wide">PHASE 2. BUREAU OF INTERNAL REVENUE</span>
-                              <span className="font-mono text-[11px] text-black">
-                                Php {proposalDetails?.isDiscountEligible ? (
-                                  (proposalDetails.phase2Fee * (1 - proposalDetails.discountPercentage / 100)).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                                ) : (
-                                  proposalDetails.phase2Fee.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                                )}
-                              </span>
+                          <div className="text-[11pt] text-black space-y-1">
+                            <div className="font-bold pl-12 uppercase select-none">
+                              PHASE 2. BUREAU OF INTERNAL REVENUE
                             </div>
-                            <div className="grid grid-cols-[1fr_auto] gap-2 text-[10px] text-black leading-none">
-                              <span>Upon release of BIR COR</span>
-                              {proposalDetails?.isDiscountEligible && (
-                                <span className="text-black font-semibold text-[9.5px]">
-                                  ({proposalDetails.discountPercentage}% discount from Php {proposalDetails.phase2Fee.toLocaleString('en-PH', { minimumFractionDigits: 2 })})
+                            <div className="pl-24 grid grid-cols-[280px_30px_1fr] text-[11pt] text-black items-baseline leading-normal">
+                              <div>Upon release of BIR COR</div>
+                              <div className="text-center">-</div>
+                              <div>
+                                <span className="font-bold">
+                                  Php {phase2Final.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </span>
-                              )}
+                                {isDiscount && (
+                                  <span className="block text-[11pt] italic mt-0.5 select-none text-black">
+                                    {discountPct}% discount from Php {phase2Base.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         )}
 
                         {/* Phase 3 display block */}
                         {proposalDetails?.includePhase3 && (
-                          <div className="text-xs pt-1">
-                            <div className="grid grid-cols-[1fr_auto] gap-2 items-baseline font-bold text-black">
-                              <span className="uppercase text-[10px] tracking-wide">PHASE 3. LOCAL GOVERNMENT UNIT</span>
-                              <span className="font-mono text-[11px] text-black">
-                                Php {proposalDetails?.isDiscountEligible ? (
-                                  (proposalDetails.phase3Fee * (1 - proposalDetails.discountPercentage / 100)).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                                ) : (
-                                  proposalDetails.phase3Fee.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                                )}
-                              </span>
+                          <div className="text-[11pt] text-black space-y-1">
+                            <div className="font-bold pl-12 uppercase select-none">
+                              PHASE 3. LOCAL GOVERNMENT UNIT
                             </div>
-                            <div className="grid grid-cols-[1fr_auto] gap-2 text-[10px] text-black leading-none">
-                              <span>Upon release of the Mayor's Permit</span>
-                              {proposalDetails?.isDiscountEligible && (
-                                <span className="text-black font-semibold text-[9.5px]">
-                                  ({proposalDetails.discountPercentage}% discount from Php {proposalDetails.phase3Fee.toLocaleString('en-PH', { minimumFractionDigits: 2 })})
+                            <div className="pl-24 grid grid-cols-[280px_30px_1fr] text-[11pt] text-black items-baseline leading-normal">
+                              <div>Upon release of the Mayor's Permit</div>
+                              <div className="text-center">-</div>
+                              <div>
+                                <span className="font-bold">
+                                  Php {phase3Final.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </span>
-                              )}
+                                {isDiscount && (
+                                  <span className="block text-[11pt] italic mt-0.5 select-none text-black">
+                                    {discountPct}% discount from Php {phase3Base.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         )}
 
-                        {/* Phase 4 CONTRACT DRAFTING display block */}
-                        <div className="text-xs pt-2 border-t border-black mt-2">
-                          <div className="font-bold text-black uppercase text-[10px] tracking-wide mb-1">
-                            PHASE 4. CONTRACT DRAFTING
-                          </div>
-                          <div className="grid grid-cols-[1fr_auto] gap-2 text-xs text-black pl-4 font-mono leading-none py-0.5">
-                            <span>Shareholders’ Agreement</span>
-                            <span className="text-black font-semibold">Php 15,000.00</span>
-                          </div>
-                          <div className="grid grid-cols-[1fr_auto] gap-2 text-xs text-black pl-4 font-mono leading-none py-0.5">
-                            <span>Franchise Agreement</span>
-                            <span className="text-black font-semibold">Php 15,000.00</span>
-                          </div>
-                          <div className="grid grid-cols-[1fr_auto] gap-2 text-xs text-black pl-4 font-mono leading-none py-0.5">
-                            <span>Employment Agreement</span>
-                            <span className="text-black font-semibold">Php 15,000.01</span>
-                          </div>
-                        </div>
                       </div>
                     </div>
 
                     {/* SSS Note Block matches PDF */}
                     <p className="text-black text-[11pt] leading-relaxed pt-2">
-                      Should you choose our law firm to register your business with the Social Security System (SSS), the Philippine Health Insurance Corporation (PhilHealth), and the Home Mutual Development Fund (HMDF/Pag-IBIG), the scope of this service includes the registration and acquisition of a corporate ID number for SSS, PhilHealth and Pag-IBIG. For the foregoing service, our professional fees shall be fixed at <span className="font-semibold text-black">Php 10,000.00</span> per Government Agency required.
+                      Should you choose our law firm to register your business with the Social Security System (SSS), the Philippine Health Insurance Corporation (PhilHealth), and the Home Mutual Development Fund (HMDF/Pag-IBIG), the scope of this service includes the registration and acquisition of a corporate ID number for SSS, PhilHealth and Pag-IBIG. For the foregoing service, our professional fees shall be fixed at <span className="font-semibold text-black">Php {((proposalDetails?.govRegFee !== undefined ? proposalDetails.govRegFee : 10000)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> per Government Agency required.
                     </p>
 
                     <p className="text-black text-[11pt] leading-relaxed">
@@ -632,25 +631,33 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                     </p>
                   </div>
                 </div>
+
+                {/* Footer */}
+                <div className="mt-auto pt-4 select-none -mx-[0.6in]">
+                  <div className="w-full border-t-[3px] border-black mb-2"></div>
+                  <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
+                    www.stlaf.global
+                  </div>
+                </div>
               </div>
 
               {/* Page Break to Page 4 */}
-              <div className="page-break pt-6" />
+              <div className="page-break h-[1.2in] print:h-0" />
 
               {/* PAGE 4: ADMINISTRATIVE & SIGN OFF */}
-              <div className="flex flex-col pt-4 text-justify min-h-[9.5in] justify-between">
+              <div className="flex flex-col pt-4 text-justify justify-between" style={{ minHeight: innerPageHeight }}>
                 <div>
                   {/* Letterhead */}
-                  <div className="flex justify-between items-center border-b border-black pb-3 mb-6 select-none">
+                  <div className="flex justify-between items-center -mt-[0.8in] -mx-[0.6in] mb-6 select-none">
                     <div className="flex items-center gap-3">
                       <img 
-                        src="/custom_logo/proposal.png" 
+                        src="/custom_logo/header.png" 
                         alt="STLAF Logo" 
-                        className="h-36 max-h-36 w-auto object-contain" 
+                        className="h-28 max-h-28 w-auto object-contain" 
                         referrerPolicy="no-referrer"
                       />
                     </div>
-                    <div className="text-right text-[7.5px] font-medium text-black uppercase tracking-wider leading-relaxed font-book-antiqua" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
+                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "10pt" }}>
                       7F, Victoria Sports Tower<br />
                       EDSA, South Triangle,<br />
                       Quezon City, Philippines<br />
@@ -665,7 +672,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                     </p>
 
                     <p className="text-black leading-relaxed text-justify">
-                      All indirect expenses shall be for the account of the client. However, in instances that we may be advised to advance some incidental necessary costs and other out-of-pocket expenses such as photocopying expenses, filing, and mailing fees, we expect to be reimbursed for the same within ten (10) days from the actual payment of such expense. Messengerial Expenses shall likewise be for the account of the client which shall be fixed at <span className="font-semibold text-black">Php 1,000.00</span> within Metro Manila and <span className="font-semibold text-black">Php 1,500.00</span> outside Metro Manila per day of legwork.
+                      All indirect expenses shall be for the account of the client. However, in instances that we may be advised to advance some incidental necessary costs and other out-of-pocket expenses such as photocopying expenses, filing, and mailing fees, we expect to be reimbursed for the same within ten (10) days from the actual payment of such expense. Messengerial Expenses shall likewise be for the account of the client which shall be fixed at <span className="font-semibold text-black">Php {((proposalDetails?.messengerialMetroManila !== undefined ? proposalDetails.messengerialMetroManila : 1000)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> within Metro Manila and <span className="font-semibold text-black">Php {((proposalDetails?.messengerialOutside !== undefined ? proposalDetails.messengerialOutside : 1500)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> outside Metro Manila per day of legwork.
                     </p>
 
                     <p className="text-black leading-relaxed text-justify">
@@ -676,99 +683,107 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       You may rest assured that we will exert our best efforts to complete the engagement most professionally and expeditiously consistent with our desire to provide distinguished services.
                     </p>
 
-                    <div className="pt-2 select-none">
-                      <div className="font-semibold text-black text-[10px]">Sincerely yours,</div>
+                    <div className="pt-2 select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
+                      <div className="text-black mb-12">Sincerely yours,</div>
                       
-                      <div className="relative inline-block mt-4">
-                        <div className="font-bold text-[12px] uppercase text-black tracking-wide pt-1 border-t border-black mt-6 min-w-[200px]">
+                      <div className="mb-10">
+                        <div className="font-bold uppercase text-black leading-tight">
                           ATTY. CHRIS C. TAMESIS
                         </div>
-                        <div className="text-[10px] text-black leading-none pt-0.5 font-medium">
+                        <div className="text-black font-normal leading-tight">
                           Partner
                         </div>
                       </div>
                     </div>
 
                     {/* CONFORMITY */}
-                    <div className="border-t border-black pt-4 mt-4">
-                      <div className="text-center font-bold text-xs uppercase tracking-widest text-black mb-2 leading-none">
+                    <div className="pt-4 mt-4" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
+                      <div className="text-left font-bold uppercase tracking-wide text-black mb-4 underline">
                         ACCEPTANCE and CONFORMITY
                       </div>
 
-                      <p className="text-black text-[10px] text-justify leading-relaxed mb-4">
-                        I have read, and hereby accept, the terms of this engagement letter. Upon signing this proposal, I accept the following Phases/Package: <span className="italic block text-[9.5px] mt-0.5 text-black"> (Kindly put a mark below, Phases/Package of the services requested)</span>
-                      </p>
-
-                      <div className="grid grid-cols-[1.5fr_1.2fr] gap-6 items-start">
-                        {/* Signing fields */}
-                        <div className="space-y-5 pt-2">
-                          <div className="flex flex-col">
-                            <span className="text-black border-b border-dashed border-black w-full text-center pb-1 text-[11px] font-mono leading-none">
-                              .........................................................................
-                            </span>
-                            <span className="text-xs font-bold text-center uppercase tracking-wide text-black leading-normal block pt-1">
-                              {proposalDetails?.clientName || "AW WAI KHEONG"}
-                            </span>
-                          </div>
-
-                          <div className="flex flex-col">
-                            <span className="text-black border-b border-dashed border-black w-full text-center pb-1 text-[11px] font-mono leading-none">
-                              .........................................................................
-                            </span>
-                            <span className="text-[10px] uppercase font-semibold text-center tracking-wider text-black leading-normal block pt-1">
-                              Date Signed
-                            </span>
-                          </div>
+                      <div className="grid grid-cols-[1.1fr_1fr] gap-6 items-start">
+                        {/* Acceptance text paragraph */}
+                        <div>
+                          <p className="text-black text-justify leading-relaxed">
+                            I have read, and hereby accept, the terms of this engagement letter. Upon signing this proposal, I accept the following Phases/Package: <span className="italic">(Kindly put a mark below, Phases/Package of the services requested)</span>
+                          </p>
                         </div>
 
-                        {/* Checklist table matching Page 4 exactly */}
-                        <div className="border border-black bg-white">
-                          <div className="grid grid-cols-[1fr_80px] border-b border-black text-[9px] font-bold uppercase tracking-wider text-black">
-                            <div className="p-1 px-2 border-r border-black">Phases / Package</div>
-                            <div className="p-1 text-center font-extrabold">Mark (x)</div>
-                          </div>
-                          
-                          <div className="divide-y divide-black text-[8.5px] font-medium leading-none">
-                            <div className="grid grid-cols-[1fr_80px]">
-                              <div className="p-1 px-2 border-r border-black font-semibold text-black">Phase 1 : Securities & Exchange Commission</div>
-                              <div className="p-1 text-center font-bold text-black">{proposalDetails?.includePhase1 ? "X" : ""}</div>
-                            </div>
-                            <div className="grid grid-cols-[1fr_80px]">
-                              <div className="p-1 px-2 border-r border-black font-semibold text-black">Phase 2 : Bureau of Internal Revenue</div>
-                              <div className="p-1 text-center font-bold text-black">{proposalDetails?.includePhase2 ? "X" : ""}</div>
-                            </div>
-                            <div className="grid grid-cols-[1fr_80px]">
-                              <div className="p-1 px-2 border-r border-black font-semibold text-black">Phase 3 : Local Government Unit</div>
-                              <div className="p-1 text-center font-bold text-black">{proposalDetails?.includePhase3 ? "X" : ""}</div>
-                            </div>
-                            <div className="grid grid-cols-[1fr_80px]">
-                              <div className="p-1 px-2 border-r border-black font-semibold text-black">Phase 4 : CPRS Customs Accreditation</div>
-                              <div className="p-1 text-center font-bold text-black">{proposalDetails?.isCustomsLinked ? "X" : ""}</div>
-                            </div>
-                            <div className="grid grid-cols-[1fr_80px]">
-                              <div className="p-1 px-2 border-r border-black font-semibold text-black">Phase 5 : Continuous Corporate Advisory</div>
-                              <div className="p-1 text-center"></div>
-                            </div>
-                            <div className="grid grid-cols-[1fr_80px]">
-                              <div className="p-1 px-2 border-r border-black font-semibold text-black text-[7.5px]">Social Security System (SSS)</div>
-                              <div className="p-1 text-center font-bold text-black"></div>
-                            </div>
-                            <div className="grid grid-cols-[1fr_80px]">
-                              <div className="p-1 px-2 border-r border-black font-semibold text-black text-[7.5px]">Home Mutual Development Fund (Pag-IBIG)</div>
-                              <div className="p-1 text-center font-bold text-black"></div>
-                            </div>
-                            <div className="grid grid-cols-[1fr_80px]">
-                              <div className="p-1 px-2 border-r border-black font-semibold text-black text-[7.5px]">PhilHealth Registration</div>
-                              <div className="p-1 text-center font-bold text-black"></div>
-                            </div>
-                            <div className="grid grid-cols-[1fr_80px]">
-                              <div className="p-1 px-2 border-r border-black font-semibold text-black">Employment Contract Layout</div>
-                              <div className="p-1 text-center"></div>
-                            </div>
-                          </div>
+                        {/* Checklist table matching the image with compact checkboxes */}
+                        <div className="border border-black bg-white select-none">
+                          <table className="w-full border-collapse">
+                            <tbody>
+                              <tr className="border-b border-black">
+                                <td className="py-0.5 px-2 border-r border-black italic text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>Phase 1</td>
+                                <td className="py-0.5 px-2 text-center">
+                                  <div className="w-4 h-4 border border-black mx-auto"></div>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-black">
+                                <td className="py-0.5 px-2 border-r border-black italic text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>Phase 2</td>
+                                <td className="py-0.5 px-2 text-center">
+                                  <div className="w-4 h-4 border border-black mx-auto"></div>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-black">
+                                <td className="py-0.5 px-2 border-r border-black italic text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>Phase 3</td>
+                                <td className="py-0.5 px-2 text-center">
+                                  <div className="w-4 h-4 border border-black mx-auto"></div>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-black">
+                                <td className="py-0.5 px-2 border-r border-black italic uppercase text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>SSS</td>
+                                <td className="py-0.5 px-2 text-center">
+                                  <div className="w-4 h-4 border border-black mx-auto"></div>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-black">
+                                <td className="py-0.5 px-2 border-r border-black italic uppercase text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>PAG-IBIG</td>
+                                <td className="py-0.5 px-2 text-center">
+                                  <div className="w-4 h-4 border border-black mx-auto"></div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="py-0.5 px-2 border-r border-black italic uppercase text-[11pt] leading-tight text-black font-book-antiqua" style={{ fontFamily: "'Book Antiqua', serif" }}>PHILHEALTH</td>
+                                <td className="py-0.5 px-2 text-center">
+                                  <div className="w-4 h-4 border border-black mx-auto"></div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      {/* Client Signature and Date Signed centered horizontally */}
+                      <div className="flex flex-col items-center justify-center mt-12 space-y-16 text-center select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
+                        <div className="flex flex-col items-center">
+                          <span className="text-black select-none leading-none mb-1">
+                            .........................................................................
+                          </span>
+                          <span className="font-bold uppercase tracking-wide text-black" style={{ fontSize: "12pt" }}>
+                            {proposalDetails?.clientName || "[CLIENT NAME]"}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col items-center">
+                          <span className="text-black select-none leading-none mb-1">
+                            .........................................................................
+                          </span>
+                          <span className="font-bold uppercase tracking-wide text-black" style={{ fontSize: "12pt" }}>
+                            DATE SIGNED
+                          </span>
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="mt-auto pt-4 select-none -mx-[0.6in]">
+                  <div className="w-full border-t-[3px] border-black mb-2"></div>
+                  <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
+                    www.stlaf.global
                   </div>
                 </div>
               </div>

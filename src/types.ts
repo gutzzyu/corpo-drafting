@@ -64,5 +64,9 @@ export interface ProposalDetails {
   isDiscountEligible: boolean;
   discountPercentage: number; // default e.g. 10
   customLogoPath?: string;
+  salutation?: string;
+  govRegFee?: number;
+  messengerialMetroManila?: number;
+  messengerialOutside?: number;
 }
 

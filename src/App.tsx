@@ -97,7 +97,11 @@ export default function App() {
     phase3Fee: 30000,
     isDiscountEligible: false,
     discountPercentage: 10,
-    customLogoPath: ''
+    customLogoPath: '',
+    salutation: 'Mr.',
+    govRegFee: 10000,
+    messengerialMetroManila: 1000,
+    messengerialOutside: 1500
   });
   const [proposalLogoType, setProposalLogoType] = useState<'default' | 'upload' | 'path'>('default');
   const [proposalLogoBase64, setProposalLogoBase64] = useState<string | null>(null);
@@ -440,7 +444,11 @@ export default function App() {
       phase3Fee: 30000,
       isDiscountEligible: false,
       discountPercentage: 10,
-      customLogoPath: ''
+      customLogoPath: '',
+      salutation: 'Mr.',
+      govRegFee: 10000,
+      messengerialMetroManila: 1000,
+      messengerialOutside: 1500
     });
     setProposalLogoType('default');
     setProposalLogoBase64(null);
@@ -1676,8 +1684,29 @@ export default function App() {
                 </CardHeader>
                 <CardContent className="p-8 space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-slate-100 font-inter">
-                    {/* Client Name */}
-                    <div className="space-y-2 md:col-span-2">
+                    {/* Client Salutation & Client Name */}
+                    <div className="space-y-2 col-span-1">
+                      <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Salutation / Honorific</Label>
+                      <Select 
+                        value={proposalDetails.salutation || 'Mr.'} 
+                        onValueChange={(v) => setProposalDetails(prev => ({ ...prev, salutation: v }))}
+                      >
+                        <SelectTrigger className="h-12 border-slate-200 bg-white">
+                          <SelectValue placeholder="Mr." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Mr.">Mr.</SelectItem>
+                          <SelectItem value="Ms.">Ms.</SelectItem>
+                          <SelectItem value="Mrs.">Mrs.</SelectItem>
+                          <SelectItem value="Dr.">Dr.</SelectItem>
+                          <SelectItem value="Atty.">Atty.</SelectItem>
+                          <SelectItem value="Engr.">Engr.</SelectItem>
+                          <SelectItem value="Prof.">Prof.</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2 col-span-1">
                       <Label className="text-[#123765] font-bold uppercase text-[10px] tracking-widest">Client Name</Label>
                       <Input 
                         placeholder="e.g. AW WAI KHEONG" 
@@ -1707,21 +1736,6 @@ export default function App() {
                         value={proposalDetails.proposalDate}
                         onChange={(e) => setProposalDetails(prev => ({ ...prev, proposalDate: e.target.value }))}
                       />
-                    </div>
-
-                    {/* Linked to Customs */}
-                    <div className="flex items-center space-x-3 p-4 bg-slate-50/50 rounded-lg border border-slate-100 self-end h-[48px] font-inter">
-                      <input 
-                        type="checkbox" 
-                        id="isCustomsLinked"
-                        className="h-5 w-5 rounded border-slate-300 text-[#123765] focus:ring-[#123765]"
-                        checked={proposalDetails.isCustomsLinked}
-                        onChange={(e) => setProposalDetails(prev => ({ ...prev, isCustomsLinked: e.target.checked }))}
-                      />
-                      <div className="space-y-0.5">
-                        <Label htmlFor="isCustomsLinked" className="text-sm font-bold text-[#123765]" style={{ cursor: "pointer" }}>Linked to Customs</Label>
-                        <p className="text-[10px] text-slate-400">If yes, Phase 4 (Customs Accreditation) is included.</p>
-                      </div>
                     </div>
 
                     {/* Fees Customization */}
@@ -1857,6 +1871,49 @@ export default function App() {
                       </div>
                     </div>
 
+                    {/* Government & Messengerial Fees Customization */}
+                    <div className="space-y-4 md:col-span-2 pt-4">
+                      <Label className="text-[#123765] font-extrabold uppercase text-[11px] tracking-widest block font-sans">Government & Messengerial Fees</Label>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-inter">
+                        {/* Gov Reg Fee */}
+                        <div className="space-y-2 p-4 bg-slate-50/50 border rounded-lg">
+                          <Label className="text-[10px] text-slate-500 uppercase font-bold block">Gov't Reg. Fee (per agency)</Label>
+                          <Input 
+                            type="number"
+                            className="h-10 text-sm font-semibold bg-white"
+                            value={proposalDetails.govRegFee}
+                            onChange={(e) => setProposalDetails(prev => ({ ...prev, govRegFee: parseFloat(e.target.value) || 0 }))}
+                          />
+                          <p className="text-[9px] text-slate-400 font-medium">Default: Php 10,000.00 (SSS/PhilHealth/Pag-IBIG)</p>
+                        </div>
+
+                        {/* Messengerial Metro Manila */}
+                        <div className="space-y-2 p-4 bg-slate-50/50 border rounded-lg">
+                          <Label className="text-[10px] text-slate-500 uppercase font-bold block">Messengerial (Metro Manila)</Label>
+                          <Input 
+                            type="number"
+                            className="h-10 text-sm font-semibold bg-white"
+                            value={proposalDetails.messengerialMetroManila}
+                            onChange={(e) => setProposalDetails(prev => ({ ...prev, messengerialMetroManila: parseFloat(e.target.value) || 0 }))}
+                          />
+                          <p className="text-[9px] text-slate-400 font-medium">Default: Php 1,000.00 / day of legwork</p>
+                        </div>
+
+                        {/* Messengerial Outside */}
+                        <div className="space-y-2 p-4 bg-slate-50/50 border rounded-lg">
+                          <Label className="text-[10px] text-slate-500 uppercase font-bold block">Messengerial (Outside MM)</Label>
+                          <Input 
+                            type="number"
+                            className="h-10 text-sm font-semibold bg-white"
+                            value={proposalDetails.messengerialOutside}
+                            onChange={(e) => setProposalDetails(prev => ({ ...prev, messengerialOutside: parseFloat(e.target.value) || 0 }))}
+                          />
+                          <p className="text-[9px] text-slate-400 font-medium">Default: Php 1,500.00 / day of legwork</p>
+                        </div>
+                      </div>
+                    </div>
+
                     {/* Discount section */}
                     <div className="space-y-4 md:col-span-2 bg-[#fffdf5] border border-amber-100 p-6 rounded-xl font-inter">
                       <div className="flex items-center space-x-3">
@@ -1928,12 +1985,6 @@ export default function App() {
                                 )}
                               </span>
                             </div>
-                            {proposalDetails.isCustomsLinked && (
-                              <div className="flex justify-between text-slate-500 italic mt-1 border-t border-dashed pt-1">
-                                <span>Phase 4 (BOC):</span>
-                                <span>[Left Blank]</span>
-                              </div>
-                            )}
                           </div>
                         </div>
                       )}
