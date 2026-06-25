@@ -398,7 +398,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               <div className={getProposalPageClass()}>
                 <div>
                   {/* Compact Letterhead */}
-                  <div className="flex justify-between items-center mb-6 select-none pb-4 -mx-[0.6in]">
+                  <div className="flex justify-between items-center mb-6 select-none pb-4 -ml-[0.6in] -mr-[0.3in]">
                     <div className="flex items-center gap-3">
                       <img 
                         src="/custom_logo/header.png" 
@@ -507,7 +507,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Footer */}
-                <div className="select-none -mx-[0.6in]">
+                <div className="select-none -ml-[0.6in] -mr-[0.3in] -mb-[0.4in] mt-auto">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -522,7 +522,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               <div className={getProposalPageClass()}>
                 <div>
                   {/* Compact Letterhead */}
-                  <div className="flex justify-between items-center mb-6 select-none pb-4 -mx-[0.6in]">
+                  <div className="flex justify-between items-center mb-6 select-none pb-4 -ml-[0.6in] -mr-[0.3in]">
                     <div className="flex items-center gap-3">
                       <img 
                         src="/custom_logo/header.png" 
@@ -665,7 +665,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Footer */}
-                <div className="select-none -mx-[0.6in]">
+                <div className="select-none -ml-[0.6in] -mr-[0.3in] -mb-[0.4in] mt-auto">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -680,7 +680,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               <div className={getProposalPageClass()}>
                 <div>
                   {/* Compact Letterhead */}
-                  <div className="flex justify-between items-center mb-6 select-none pb-4 -mx-[0.6in]">
+                  <div className="flex justify-between items-center mb-6 select-none pb-4 -ml-[0.6in] -mr-[0.3in]">
                     <div className="flex items-center gap-3">
                       <img 
                         src="/custom_logo/header.png" 
@@ -811,7 +811,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Footer */}
-                <div className="select-none -mx-[0.6in]">
+                <div className="select-none -ml-[0.6in] -mr-[0.3in] -mb-[0.4in] mt-auto">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
