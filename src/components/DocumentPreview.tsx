@@ -381,10 +381,10 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                   </div>
                 </div>
 
-                <div className="mt-auto mb-32 py-8 flex flex-col items-center w-full">
+                <div className="mt-auto mb-16 py-8 flex flex-col items-center w-full">
                   {/* Dynamic Client display exactly matching target PDF style */}
                   <div className="w-auto border-b border-black pb-2 px-12">
-                    <h1 className="text-[26px] font-bold text-black uppercase tracking-wider text-center">
+                    <h1 className="text-[26pt] font-bold text-black uppercase tracking-wider text-center">
                       {proposalDetails?.clientName || "[CLIENT NAME]"}
                     </h1>
                   </div>
@@ -403,7 +403,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       <img 
                         src="/custom_logo/header.png" 
                         alt="STLAF Logo" 
-                        className="h-20 max-h-20 w-auto object-contain" 
+                        className="h-32 max-h-32 w-auto object-contain" 
                         referrerPolicy="no-referrer"
                       />
                     </div>
@@ -479,14 +479,14 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
                            PHASE I: Securities and Exchange Commission (SEC)
                         </div>
-                        <ul className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
+                        <ol className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
                           <li>Legal advisory on how to put up a corporation in the Philippines;</li>
                           <li>Reservation and acquisition of Company name from the SEC;</li>
                           <li>Assistance in the drafting of documents, as necessary, to be submitted with the SEC, including By-Laws, Articles of Incorporation, Treasurer’s Affidavit, among others;</li>
                           <li>Coordination with your authorized representative and finalization of the required documents to be submitted to the SEC;</li>
                           <li>Submission and coordination with the officers of the SEC; and</li>
                           <li>Acquisition of the SEC Certification of Registration.</li>
-                        </ul>
+                        </ol>
                       </div>
                     )}
 
@@ -496,11 +496,11 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
                            PHASE II: Bureau of Internal Revenue (BIR)
                         </div>
-                        <ul className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
+                        <ol className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
                           <li>Preparation and acquisition of the necessary documents to be submitted to the BIR;</li>
                           <li>Drafting of Secretary’s Certificate and other documentary requirements;</li>
                           <li>Requisition of the Tax Identification Number of the new business;</li>
-                        </ul>
+                        </ol>
                       </div>
                     )}
                   </div>
@@ -527,7 +527,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       <img 
                         src="/custom_logo/header.png" 
                         alt="STLAF Logo" 
-                        className="h-20 max-h-20 w-auto object-contain" 
+                        className="h-32 max-h-32 w-auto object-contain" 
                         referrerPolicy="no-referrer"
                       />
                     </div>
@@ -542,14 +542,11 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                     {/* PHASE II PART II */}
                     {proposalDetails?.includePhase2 && (
                       <div className="space-y-1">
-                        <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
-                          PHASE II: Bureau of Internal Revenue (BIR) (cont'd)
-                        </div>
-                        <ul className="list-decimal pl-12 text-[11pt] text-black space-y-0.5" start={4}>
+                        <ol className="list-decimal pl-12 text-[11pt] text-black space-y-0.5" start={4}>
                           <li>Coordination with your authorized representative and finalization of required documents to be submitted to the BIR;</li>
                           <li>Requisition of the Certificate of the Authority to Print Receipts; and</li>
                           <li>Acquisition of BIR Certificate of Registration.</li>
-                        </ul>
+                        </ol>
                       </div>
                     )}
 
@@ -559,7 +556,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
                           PHASE III: Local Government Unit Permit to Operate (Mayor’s Permit)
                         </div>
-                        <ul className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
+                        <ol className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
                           <li>Coordination with the Local Government where the Company will operate;</li>
                           <li>Collation of all necessary documents to be submitted to the local government;</li>
                           <li>Drafting of Secretary’s Certificate and other documentary requirements;</li>
@@ -567,7 +564,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                           <li>Payment of taxes and fees on behalf of the business;</li>
                           <li>Secure clearance from ancillary departments of the local government; and</li>
                           <li>Acquisition of Mayor’s Permit issued by the Local Government Unit.</li>
-                        </ul>
+                        </ol>
                       </div>
                     )}
 
@@ -688,7 +685,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       <img 
                         src="/custom_logo/header.png" 
                         alt="STLAF Logo" 
-                        className="h-20 max-h-20 w-auto object-contain" 
+                        className="h-32 max-h-32 w-auto object-contain" 
                         referrerPolicy="no-referrer"
                       />
                     </div>
