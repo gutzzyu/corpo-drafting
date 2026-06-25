@@ -38,15 +38,17 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
     paperSize
   } = details;
 
-  const innerPageHeight = paperSize === 'legal' ? '10.8in' : paperSize === 'a4' ? '9.4in' : '8.8in';
+  const activePaperSize = documentType === 'proposal' ? 'letter' : paperSize;
+
+  const innerPageHeight = activePaperSize === 'legal' ? '10.8in' : activePaperSize === 'a4' ? '9.4in' : '8.8in';
 
   useEffect(() => {
     const updatePages = () => {
       if (!contentContainerRef.current) return;
       const height = contentContainerRef.current.getBoundingClientRect().height;
       let pixelsPerPage = 1056;
-      if (paperSize === 'a4') pixelsPerPage = 930;
-      if (paperSize === 'letter') pixelsPerPage = 864;
+      if (activePaperSize === 'a4') pixelsPerPage = 930;
+      if (activePaperSize === 'letter') pixelsPerPage = 864;
       
       const pages = Math.ceil(height / pixelsPerPage);
       setEstimatedPages(pages + 1);
@@ -71,7 +73,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
       clearTimeout(timeoutId);
       observer.disconnect();
     };
-  }, [details, paperSize]);
+  }, [details, activePaperSize]);
 
   const numberToWords = (num: number) => {
     const words = ["ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN"];
@@ -120,8 +122,8 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
   const getProposalPageClass = () => {
     return cn(
       "bg-white shadow-2xl relative flex flex-col justify-between text-justify select-text",
-      paperSize === 'legal' ? 'w-[8.5in] h-[13in] min-h-[13in]' : paperSize === 'a4' ? 'w-[210mm] h-[297mm] min-h-[297mm]' : 'w-[8.5in] h-[11in] min-h-[11in]',
-      "pt-[0.5in] pb-[0.8in] px-[0.8in] mb-8 print:mb-0 print:shadow-none print:w-full print:h-screen print:min-h-0"
+      activePaperSize === 'legal' ? 'w-[8.5in] h-[13in] min-h-[13in]' : activePaperSize === 'a4' ? 'w-[210mm] h-[297mm] min-h-[297mm]' : 'w-[8.5in] h-[11in] min-h-[11in]',
+      "pt-[0.4in] pb-[0.4in] px-[0.8in] mb-8 print:mb-0 print:shadow-none"
     );
   };
 
@@ -156,7 +158,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
           }
 
           @page { 
-            size: ${paperSize === 'legal' ? '8.5in 13in' : paperSize}; 
+            size: ${activePaperSize === 'legal' ? '8.5in 13in' : activePaperSize}; 
             margin: 0; 
           }
           
@@ -175,7 +177,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
           "document-font text-black text-[12pt] print:shadow-none print:m-0 print-content w-full flex flex-col items-center",
           documentType === 'proposal'
             ? "bg-transparent shadow-none p-0 m-0"
-            : cn("bg-white shadow-2xl p-[1in]", paperClasses[paperSize])
+            : cn("bg-white shadow-2xl p-[1in]", paperClasses[activePaperSize])
         )}
       >
         {/* Page 1 Content */}
@@ -188,7 +190,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
 
               <div className="font-bold mb-8 uppercase">KNOW ALL MEN BY THESE PRESENTS:</div>
 
-              <div className="mb-6 leading-relaxed">
+              <div className="mb-6 leading-normal">
                 I, <strong>{affiantName || "[NAME OF PRINCIPAL]"}</strong>, of legal age, {nationality || "Filipino"}, {civilStatus || "[CIVIL STATUS]"}, resident of {address || "[COMPLETE ADDRESS]"}, do hereby constitute and appoint representatives of <strong>SADSAD TAMESIS LEGAL AND ACCOUNTANCY FIRM</strong> including <strong>{representatives || "[NAME OF REPRESENTATIVES]"}</strong> of legal ages, Filipino, as my true and legal representatives to act for and in my name and stead and perform the following acts and things to wit:
               </div>
 
@@ -225,7 +227,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                     }
 
                     return (
-                      <li key={p.id} className="pl-2 leading-relaxed text-justify">
+                      <li key={p.id} className="pl-2 leading-normal text-justify">
                         {formattedText}
                       </li>
                     );
@@ -233,12 +235,12 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </ol>
               </div>
 
-              <div className="mb-8 leading-relaxed">
+              <div className="mb-8 leading-normal">
                 <strong>HEREBY GRANTING</strong> unto my representative full power and authority to execute and perform every act necessary to render effective the abovementioned power, as though I myself, has so performed it, and <strong>HEREBY APPROVING ALL</strong> that he/she may do by virtue hereof this authority. I have no objection for the said named authorized representatives, signing the documents on my behalf in my absence.
               </div>
 
               <div className="no-break">
-                <div className="mb-12 leading-relaxed">
+                <div className="mb-12 leading-normal">
                   <strong>IN WITNESS WHEREOF</strong>, I have hereunto set my hand this ____ day of ____________ {currentYear}.
                 </div>
 
@@ -275,7 +277,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 <div className="font-bold mb-8 uppercase">KNOWN ALL MEN BY THIS PRESENTS</div>
               )}
 
-              <div className="mb-6 leading-relaxed indent-12">
+              <div className="mb-6 leading-normal indent-12">
                 I, <strong>{secDetails?.signatoryName || "[NAME OF SECRETARY]"}</strong>, of legal age, Filipino, with office address at <strong>{secDetails?.signatoryAddress || "[SIGNATORY OFFICE ADDRESS]"}</strong>, after being duly sworn in accordance with law, hereby certify that:
               </div>
 
@@ -307,7 +309,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 {documentType !== 'sec_dispute' && (
                   <div className="ml-8 space-y-4 mb-6 text-justify pl-12 pr-12">
                     {secDetails?.clauses?.map((clause, idx) => (
-                      <div key={clause.id} className="leading-relaxed">
+                      <div key={clause.id} className="leading-normal">
                         <div className={clause.tableData ? "mb-4" : ""}>
                           <strong>{idx === 0 ? '"' : ''}{clause.type}</strong>{clause.text.trim().startsWith(',') ? '' : ','} {clause.text.trim()}{!clause.tableData && idx === (secDetails?.clauses.length || 0) - 1 ? '"' : ''}
                         </div>
@@ -346,7 +348,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               )}
 
               <div className="no-break mt-4">
-                <div className="mb-6 leading-relaxed indent-12">
+                <div className="mb-6 leading-normal indent-12">
                   {documentType === 'sec_dispute' ? (
                     <><strong>IN TRUTH WITNESS WHEREOF</strong>, I have hereunto affixed my signature this ____ day of ____________, {currentYear}, in the City/Municipality of ____________________, Province of ____________________, Republic of the Philippines.</>
                   ) : (
@@ -366,7 +368,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                </div>
              </>
           ) : (
-            <div className="text-black leading-relaxed antialiased font-book-antiqua w-full flex flex-col items-center" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
+            <div className="text-black leading-normal antialiased font-book-antiqua w-full flex flex-col items-center" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
               {/* PAGE 1: COVER PAGE */}
               <div className={getProposalPageClass()}>
                 <div className="flex flex-col items-center w-full max-w-xl mx-auto pt-16">
@@ -398,7 +400,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               <div className={getProposalPageClass()}>
                 <div>
                   {/* Compact Letterhead */}
-                  <div className="flex justify-between items-center mb-6 select-none pb-4 -ml-[0.6in] -mr-[0.3in]">
+                  <div className="flex justify-between items-center mb-4 select-none pb-3 -ml-[0.6in] -mr-[0.3in]">
                     <div className="flex items-center gap-3">
                       <img 
                         src="/custom_logo/header.png" 
@@ -407,7 +409,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         referrerPolicy="no-referrer"
                       />
                     </div>
-                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "9.5pt" }}>
+                    <div className="text-right font-medium text-black leading-normal pr-6" style={{ fontFamily: "Georgia, serif", fontSize: "9.5pt" }}>
                       7F, Victoria Sports Tower<br />
                       EDSA, South Triangle, Quezon City, Philippines<br />
                       legal@sadsadtamesislaw.com | (02) 8463-494
@@ -453,15 +455,15 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       Dear {proposalDetails?.salutation || "Mr."} {getClientLastName(proposalDetails?.clientName || "")},
                     </div>
 
-                    <p className="text-black text-justify text-[11pt] leading-relaxed">
+                    <p className="text-black text-justify text-[11pt] leading-normal">
                       Thank you for considering STLAF (Sadsad Tamesis Legal and Accountancy Firm) to provide you with our legal services. At STLAF, we take pride in delivering more than just legal counsel and numerical analysis. Our approach emphasizes providing insights that transcend mere legalities and financial figures, ensuring the highest quality and excellence in our services.
                     </p>
 
-                    <p className="text-black text-justify text-[11pt] leading-relaxed">
+                    <p className="text-black text-justify text-[11pt] leading-normal">
                       We are pleased to submit this proposal to you, offering legal assistance and advisory services for <span className="font-semibold text-black">{proposalDetails?.clientName || "the Client"}</span> for incorporation of new business.
                     </p>
 
-                    <p className="text-black text-justify text-[11pt] leading-relaxed">
+                    <p className="text-black text-justify text-[11pt] leading-normal">
                       Upon acceptance, this proposal will serve as the contractual agreement between us, outlining the scope of services to be provided and confirming the respective responsibilities of both parties regarding the discussed engagement.
                     </p>
 
@@ -469,7 +471,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       Scope of Services
                     </div>
 
-                    <p className="text-black text-[11pt] leading-relaxed">
+                    <p className="text-black text-[11pt] leading-normal">
                       Based on our understanding, you intend to put up a new business, and thus in need of legal assistance to assist you in the registration of the said business with the related government offices in the Philippines. In this connection, we are sending you this proposal which will cover the following services:
                     </p>
 
@@ -490,24 +492,11 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       </div>
                     )}
 
-                    {/* PHASE II PART I LIST */}
-                    {proposalDetails?.includePhase2 && (
-                      <div className="space-y-1 pt-1 break-inside-avoid">
-                        <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
-                           PHASE II: Bureau of Internal Revenue (BIR)
-                        </div>
-                        <ol className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
-                          <li>Preparation and acquisition of the necessary documents to be submitted to the BIR;</li>
-                          <li>Drafting of Secretary’s Certificate and other documentary requirements;</li>
-                          <li>Requisition of the Tax Identification Number of the new business;</li>
-                        </ol>
-                      </div>
-                    )}
                   </div>
                 </div>
 
                 {/* Footer */}
-                <div className="select-none -ml-[0.6in] -mr-[0.3in] -mb-[0.4in] mt-auto">
+                <div className="select-none -ml-[0.6in] -mr-[0.3in] mt-auto">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -522,7 +511,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               <div className={getProposalPageClass()}>
                 <div>
                   {/* Compact Letterhead */}
-                  <div className="flex justify-between items-center mb-6 select-none pb-4 -ml-[0.6in] -mr-[0.3in]">
+                  <div className="flex justify-between items-center mb-4 select-none pb-3 -ml-[0.6in] -mr-[0.3in]">
                     <div className="flex items-center gap-3">
                       <img 
                         src="/custom_logo/header.png" 
@@ -539,10 +528,16 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                   </div>
 
                   <div className="space-y-3">
-                    {/* PHASE II PART II */}
+                    {/* PHASE II */}
                     {proposalDetails?.includePhase2 && (
-                      <div className="space-y-1">
-                        <ol className="list-decimal pl-12 text-[11pt] text-black space-y-0.5" start={4}>
+                      <div className="space-y-1 pt-1 break-inside-avoid">
+                        <div className="font-bold text-[11pt] text-black uppercase tracking-wide">
+                           PHASE II: Bureau of Internal Revenue (BIR)
+                        </div>
+                        <ol className="list-decimal pl-12 text-[11pt] text-black space-y-0.5">
+                          <li>Preparation and acquisition of the necessary documents to be submitted to the BIR;</li>
+                          <li>Drafting of Secretary’s Certificate and other documentary requirements;</li>
+                          <li>Requisition of the Tax Identification Number of the new business;</li>
                           <li>Coordination with your authorized representative and finalization of required documents to be submitted to the BIR;</li>
                           <li>Requisition of the Certificate of the Authority to Print Receipts; and</li>
                           <li>Acquisition of BIR Certificate of Registration.</li>
@@ -573,7 +568,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       <div className="font-bold italic text-[11pt] text-black mb-1">
                         Fee arrangement
                       </div>
-                      <p className="text-black text-[11pt] leading-relaxed mb-4 text-justify">
+                      <p className="text-black text-[11pt] leading-normal mb-3 text-justify">
                         Our usual professional fees are a function of the time spent required to carry out the engagement. All professional fees shall be exclusive of VAT and withholding taxes. In summary:
                       </p>
 
@@ -648,24 +643,12 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         )}
                       </div>
                     </div>
-                    
-                    {/* PARAGRAPHS MOVED FROM PAGE 4 */}
-                    <div className="pt-4 space-y-3">
-                      {/* SSS Note Block matches PDF */}
-                      <p className="text-black text-[11pt] leading-relaxed">
-                        Should you choose our law firm to register your business with the Social Security System (SSS), the Philippine Health Insurance Corporation (PhilHealth), and the Home Mutual Development Fund (HMDF/Pag-IBIG), the scope of this service includes the registration and acquisition of a corporate ID number for SSS, PhilHealth and Pag-IBIG. For the foregoing service, our professional fees shall be fixed at <span className="font-semibold text-black">Php {((proposalDetails?.govRegFee !== undefined ? proposalDetails.govRegFee : 10000)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> per Government Agency required.
-                      </p>
-
-                      <p className="text-black text-[11pt] leading-relaxed">
-                        We shall send you our billings every fifth (5th) day of each month and expect payment from you no later than the tenth (10th) day of the same month, or five (5) days from the date of billing.
-                      </p>
-                    </div>
 
                   </div>
                 </div>
 
                 {/* Footer */}
-                <div className="select-none -ml-[0.6in] -mr-[0.3in] -mb-[0.4in] mt-auto">
+                <div className="select-none -ml-[0.6in] -mr-[0.3in] mt-auto">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -680,7 +663,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
               <div className={getProposalPageClass()}>
                 <div>
                   {/* Compact Letterhead */}
-                  <div className="flex justify-between items-center mb-6 select-none pb-4 -ml-[0.6in] -mr-[0.3in]">
+                  <div className="flex justify-between items-center mb-4 select-none pb-3 -ml-[0.6in] -mr-[0.3in]">
                     <div className="flex items-center gap-3">
                       <img 
                         src="/custom_logo/header.png" 
@@ -697,19 +680,28 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                   </div>
 
                   <div className="space-y-3 text-[11pt]">
-                    <p className="text-black leading-relaxed text-justify">
+                    {/* SSS Note Block matches PDF */}
+                    <p className="text-black text-[11pt] leading-normal text-justify">
+                      Should you choose our law firm to register your business with the Social Security System (SSS), the Philippine Health Insurance Corporation (PhilHealth), and the Home Mutual Development Fund (HMDF/Pag-IBIG), the scope of this service includes the registration and acquisition of a corporate ID number for SSS, PhilHealth and Pag-IBIG. For the foregoing service, our professional fees shall be fixed at <span className="font-semibold text-black">Php {((proposalDetails?.govRegFee !== undefined ? proposalDetails.govRegFee : 10000)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> per Government Agency required.
+                    </p>
+
+                    <p className="text-black text-[11pt] leading-normal text-justify">
+                      We shall send you our billings every fifth (5th) day of each month and expect payment from you no later than the tenth (10th) day of the same month, or five (5) days from the date of billing.
+                    </p>
+
+                    <p className="text-black leading-normal text-justify">
                       If your account is not paid within the 5-day limit, following our firm policy, the firm’s management will insist that no further work be done on your file until the account is paid and your retainer is brought up to date.
                     </p>
 
-                    <p className="text-black leading-relaxed text-justify">
+                    <p className="text-black leading-normal text-justify">
                       All indirect expenses shall be for the account of the client. However, in instances that we may be advised to advance some incidental necessary costs and other out-of-pocket expenses such as photocopying expenses, filing, and mailing fees, we expect to be reimbursed for the same within ten (10) days from the actual payment of such expense. Messengerial Expenses shall likewise be for the account of the client which shall be fixed at <span className="font-semibold text-black">Php {((proposalDetails?.messengerialMetroManila !== undefined ? proposalDetails.messengerialMetroManila : 1000)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> within Metro Manila and <span className="font-semibold text-black">Php {((proposalDetails?.messengerialOutside !== undefined ? proposalDetails.messengerialOutside : 1500)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span> outside Metro Manila per day of legwork.
                     </p>
 
-                    <p className="text-black leading-relaxed text-justify">
+                    <p className="text-black leading-normal text-justify">
                       Unless related to pending cases that warrant the appearance of our lawyers or accountants, a minimal fee on meetings with third parties that you may require the presence of our lawyers or accountants shall be charged, (charges may change depending on the area or location).
                     </p>
 
-                    <p className="text-black leading-relaxed text-justify">
+                    <p className="text-black leading-normal text-justify">
                       You may rest assured that we will exert our best efforts to complete the engagement most professionally and expeditiously consistent with our desire to provide distinguished services.
                     </p>
 
@@ -726,7 +718,42 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
 
+                {/* Footer */}
+                <div className="select-none -ml-[0.6in] -mr-[0.3in] mt-auto">
+                  <div className="w-full border-t-[3px] border-black mb-2"></div>
+                  <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
+                    www.stlaf.global
+                  </div>
+                </div>
+              </div>
+
+              {/* Page Break to Page 5 */}
+              <div className="page-break" />
+
+              {/* PAGE 5: SIGN OFF */}
+              <div className={getProposalPageClass()}>
+                <div>
+                  {/* Compact Letterhead */}
+                  <div className="flex justify-between items-center mb-4 select-none pb-3 -ml-[0.6in] -mr-[0.3in]">
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src="/custom_logo/header.png" 
+                        alt="STLAF Logo" 
+                        className="h-32 max-h-32 w-auto object-contain" 
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                    <div className="text-right font-medium text-black leading-normal" style={{ fontFamily: "Georgia, serif", fontSize: "9.5pt" }}>
+                      7F, Victoria Sports Tower<br />
+                      EDSA, South Triangle, Quezon City, Philippines<br />
+                      legal@sadsadtamesislaw.com | (02) 8463-494
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 text-[11pt]">
                     {/* CONFORMITY */}
                     <div className="pt-2" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif", fontSize: "11pt" }}>
                       <div className="text-left font-bold uppercase tracking-wide text-black mb-2 underline">
@@ -736,7 +763,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                       <div className="grid grid-cols-[1.2fr_1.1fr] gap-6 items-start">
                         {/* Acceptance text paragraph */}
                         <div>
-                          <p className="text-black text-justify leading-relaxed">
+                          <p className="text-black text-justify leading-normal">
                             I have read, and hereby accept, the terms of this engagement letter. Upon signing this proposal, I accept the following Phases/Package: <span className="italic">(Kindly put a mark below, Phases/Package of the services requested)</span>
                           </p>
                         </div>
@@ -786,8 +813,8 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                         </div>
                       </div>
 
-                      {/* Client Signature and Date Signed centered horizontally after the acceptance content */}
-                      <div className="flex flex-col items-center justify-center mt-16 space-y-16 text-center select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
+                      {/* Client Signature and Date Signed on the left after the acceptance content */}
+                      <div className="flex flex-col items-start mt-8 space-y-12 ml-4 select-none" style={{ fontFamily: "'Book Antiqua', 'Palatino Linotype', 'Palatino', 'Georgia', serif" }}>
                         <div className="flex flex-col items-center">
                           <span className="text-black select-none leading-none mb-1">
                             .........................................................................
@@ -811,7 +838,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                 </div>
 
                 {/* Footer */}
-                <div className="select-none -ml-[0.6in] -mr-[0.3in] -mb-[0.4in] mt-auto">
+                <div className="select-none -ml-[0.6in] -mr-[0.3in] mt-auto">
                   <div className="w-full border-t-[3px] border-black mb-2"></div>
                   <div className="text-center tracking-wide font-bold" style={{ fontFamily: "'Source Serif 4', 'Georgia', serif", fontSize: "11pt" }}>
                     www.stlaf.global
@@ -845,7 +872,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                   </div>
                 </div>
 
-                <div className="mb-6 leading-relaxed">
+                <div className="mb-6 leading-normal">
                   I certify that on ____________ before me, a notary public duly authorized in the city named above to make acknowledgments personally appeared:
                 </div>
 
@@ -868,13 +895,13 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ details, secDe
                   </tbody>
                 </table>
 
-                <div className="mb-6 leading-relaxed">
+                <div className="mb-6 leading-normal">
                   Who is identified by me through his/her aforementioned competent evidence of identity to be the same person in the foregoing Special Power of Attorney consisting of <strong>{numberToWords(estimatedPages)} ({estimatedPages})</strong> pages, including in which this Acknowledgment is written, and who acknowledged to me that the signature appearing above was voluntarily affixed by him/her for the purposes stated therein, and who declared to me that he/she has executed the Special Power of Attorney as his/her free and voluntary act and deed.
                 </div>
               </>
             ) : (
               <>
-                <div className="mb-4 leading-relaxed text-justify indent-12">
+                <div className="mb-4 leading-normal text-justify indent-12">
                   {documentType === 'sec_dispute' ? (
                     <><strong>SUBSCRIBED AND SWORN</strong> to before me this ____________ at ____________________, affiant exhibiting to me his/her {secDetails?.idType || "[ID TYPE]"} No. {secDetails?.idNumber || "[ID NUMBER]"}.</>
                   ) : (
